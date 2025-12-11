@@ -1,0 +1,433 @@
+SSM – Student Skill Matchmaking (Frontend UI Generation Mega Prompt)
+Next.js + ShadCN + TailwindCSS UI Generation Prompt
+
+Build a modern social-feed style dashboard for a platform called SSM – Student Skill Matchmaking.
+The entire UI must be created using Next.js + TailwindCSS + ShadCN + Framer Motion, with a clean, minimal, light-themed, rounded, shadowed, professional look.
+
+Use the exact color palette, spacing, layout rules, and component behaviors described below.
+All parts of this prompt belong to a single specification — generate the full UI system according to everything below.
+
+🎨 Design System & Color Palette
+
+Primary Blue: #2563eb
+
+Gradient (Header/Highlights): #7b2ff7 → #4facfe
+
+Light Background: #f5f6f8
+
+Card White: #ffffff
+
+Border: #e4e4e7
+
+Text Primary: #1f2937
+
+Text Secondary: #6b7280
+
+Muted Icon Gray: #d1d5db
+
+Global UI Rules
+
+Card padding: 20px
+
+Rounded corners: 14px
+
+Card spacing: 20px
+
+List item gap: 10px
+
+Column gap: 24px
+
+Fonts: Inter or Outfit
+
+Headings: 16–18px semibold
+
+Body: 14–15px
+
+Secondary text: 13px
+
+Hover animations:
+
+Scale: 1.02
+
+Stronger shadow
+
+Slight color change
+
+Smooth transitions for cards, buttons, feed actions.
+
+🧱 Layout
+
+The interface is a three-column responsive social-feed dashboard:
+
+Column Widths
+
+Left Sidebar: 20–22%
+
+Center Feed: 48–55%
+
+Right Sidebar: 22–25%
+
+Spacing between columns: 24px.
+
+🔝 Top Navigation Bar
+
+A minimal modern navbar with:
+
+Logo in primary blue (#2563eb)
+
+Center search bar with rounded corners + search icon
+
+Navigation links:
+
+Home
+
+Network
+
+Projects
+
+Messages
+
+Right corner:
+
+Circular avatar (Unsplash)
+
+Hover: darker text
+
+Search focus: blue ring (#2563eb)
+
+📌 LEFT SIDEBAR
+1. Modules Card
+
+White card with rounded corners and shadow.
+Title: Modules
+
+List items (each a rounded white block with subtle border):
+
+Business
+
+Startup
+
+Coding
+
+Design
+
+Marketing
+
+AI/ML
+
+Hover: light grey background (#f1f1f3).
+
+2. Trending Topics Card
+
+Title: Trending
+
+Hashtags (small text):
+
+#AI
+
+#EV
+
+#FinTech
+
+#Hackathons
+
+#WebDev
+
+📰 CENTER FEED
+1. Post Creation Box
+
+White card with shadow, includes:
+
+Circular avatar (Unsplash)
+
+Input placeholder:
+“Share a skill, project, or opportunity…”
+
+Rounded pill input
+
+Icons for attaching files (optional)
+
+2. Feed Post Cards
+
+Each card includes:
+
+Avatar, name (bold), subtitle (field + location)
+
+Post description text
+
+Metrics Row:
+
+Likes
+
+Comments
+
+Shares
+(all in muted gray #6b7280)
+
+Action Buttons (Like, Comment, Share):
+
+Horizontal alignment
+
+Rounded subtle hover background
+
+Posts can be:
+
+Skill offer
+
+Project invitation
+
+Workshop announcement
+
+Learning request
+
+Use professional student-themed Unsplash images.
+
+📊 RIGHT SIDEBAR
+1. Profile Card
+
+Gradient header (#7b2ff7 → #4facfe)
+
+Avatar below header (Unsplash)
+
+Name (bold)
+
+Subtitle: academic year + department
+
+Primary button (blue): Connect / Edit Profile
+
+2. Analytics Cards
+
+Minimal white cards showing:
+
+Profile Views
+
+Connections
+
+Skills Shared
+
+Skills Learning
+
+Clean layout, big numeric values.
+
+3. Saved Items
+
+White card with a list of saved posts/resources.
+Subtitle: X items saved.
+
+4. Top Stories
+
+Title + bullet list of latest:
+
+Student innovations
+
+Workshops
+
+Project collaborations
+
+Trending skill posts
+
+👤 USER AUTHENTICATION PAGES
+
+Design clean centered card UIs for:
+
+Login
+
+Signup
+
+Social logins (Google, GitHub, LinkedIn)
+
+Signup collects:
+
+Full name
+
+Academic year
+
+Department
+
+Skills to Share
+
+Skills to Learn
+
+Interests
+
+Show these using tag input fields.
+
+🧑‍🎓 STUDENT PROFILE PAGE
+
+A full profile screen with:
+
+Banner gradient header
+
+Avatar
+
+Name + academic details
+
+Skills sections:
+
+Skills to Share
+
+Skills to Learn
+
+Interests
+
+Portfolio:
+
+Images
+
+Videos
+
+GitHub, Behance links
+
+Everything inside smooth rounded cards.
+
+🤝 MATCHMAKING RESULTS PAGE
+
+Grid/list of match cards:
+
+Avatar
+
+Name
+
+Skills they can teach
+
+Skills you want to learn
+
+Compatibility score (UI only)
+
+Connect and View Profile buttons
+
+Use a clean, professional card layout.
+
+📌 INTERACTIVE DASHBOARD
+
+Dashboard includes:
+
+Current Connections
+
+Ongoing Projects
+
+Recommended Skills
+
+Upcoming Workshops
+
+Learning Feed
+
+Each section in white rounded cards with shadows.
+
+🧩 PROJECT COLLABORATION UI
+
+Features:
+
+Create Project modal
+
+Project Overview card
+
+Tasks list with checkboxes
+
+Milestone tracker
+
+Member avatars row
+
+File upload placeholders
+
+Everything styled UX-clean, minimal, and interactive.
+
+💬 MESSAGING & CHAT UI
+
+A full messaging system frontend:
+
+Sidebar with conversations
+
+Chat window
+
+Message bubbles
+
+Input box with attachments + emoji
+
+Smooth modern interface (WhatsApp + Slack hybrid)
+
+👥 GROUP CHATS & COMMUNITIES
+
+Community/group chat includes:
+
+Group list card view
+
+Inside chat feed
+
+Members modal
+
+Category filters (ML Groups, Startup Groups, etc.)
+
+🔍 SEARCH & FILTER PAGE
+
+A results page containing:
+
+Search bar at top
+
+Left sidebar filters:
+
+Skill level
+
+Availability
+
+Project experience
+
+Grid/list of student profile cards
+
+🗓️ EVENTS & WORKSHOPS
+
+Frontend UI includes:
+
+Event cards
+
+Event detail modal
+
+RSVP button
+
+Calendar view
+
+📷 ASSETS
+
+Use Unsplash images for:
+
+Avatars
+
+Project thumbnails
+
+Backgrounds
+
+Illustrations
+
+Use academic/professional student themes.
+
+🎬 FINAL OUTPUT INSTRUCTIONS
+
+Generate pixel-accurate UI components, pages, and interactions using:
+
+Next.js (App Router)
+
+TailwindCSS
+
+ShadCN UI
+
+Framer Motion (for animations)
+
+Follow exactly:
+
+Provided color palette
+
+Spacing
+
+Typography
+
+Layout widths
+
+Hover animations
+
+Card aesthetics
+
+Shadows
+
+Component structure
+
+The final generated implementation should recreate the entire platform UI exactly according to this merged specification.
