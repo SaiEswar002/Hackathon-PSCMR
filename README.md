@@ -62,13 +62,14 @@ A modern social networking platform designed for students to connect, collaborat
 ### Prerequisites
 - Node.js 18+ 
 - npm or yarn
+- [Appwrite Cloud](https://cloud.appwrite.io/) account (for backend)
 
-### Setup
+### Local Development Setup
 
 1. **Clone the repository**
    ```bash
    git clone https://github.com/SaiEswar002/Hackathon-PSCMR.git
-   cd Hackathon-PSCMR
+   cd Skill-Matcher
    ```
 
 2. **Install dependencies**
@@ -76,21 +77,67 @@ A modern social networking platform designed for students to connect, collaborat
    npm install
    ```
 
-3. **Run the development server**
+3. **Configure environment variables**
+   
+   Create a `.env` file in the root directory:
+   ```bash
+   cp .env.example .env
+   ```
+   
+   Update the `.env` file with your Appwrite credentials:
+   ```env
+   # Appwrite Configuration
+   VITE_APPWRITE_ENDPOINT=https://fra.cloud.appwrite.io/v1
+   VITE_APPWRITE_PROJECT_ID=your_project_id
+   VITE_APPWRITE_DATABASE_ID=your_database_id
+   
+   # Collection IDs
+   VITE_APPWRITE_USERS_COLLECTION_ID=users
+   VITE_APPWRITE_POSTS_COLLECTION_ID=posts
+   # ... (see .env.example for complete list)
+   ```
+
+4. **Run the development server**
    ```bash
    npm run dev
    ```
+   
+   This starts both the frontend (Vite) and backend (Express) servers:
+   - Frontend: `http://localhost:5173`
+   - Backend API: `http://localhost:5000`
 
-4. **Open your browser**
+5. **Open your browser**
    Navigate to `http://localhost:5173`
+
+### Production Deployment
+
+For detailed deployment instructions to Vercel and Appwrite Cloud, see **[DEPLOYMENT.md](DEPLOYMENT.md)**.
 
 ## 🛠️ Available Scripts
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm start` - Run production server
-- `npm run check` - Type check with TypeScript
-- `npm run db:push` - Push database schema
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server (frontend + backend) |
+| `npm run build` | Build frontend for production |
+| `npm start` | Run production server |
+| `npm run check` | Type check with TypeScript |
+| `npm run db:push` | Push database schema changes |
+
+### Development Commands
+
+```bash
+# Start only frontend dev server
+npm run dev
+
+# Build for production
+npm run build
+
+# Preview production build locally
+npm run preview
+
+# Type checking
+npm run check
+```
 
 ## 📁 Project Structure
 
