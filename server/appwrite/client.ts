@@ -5,7 +5,7 @@ const appwriteConfig = {
     endpoint: process.env.APPWRITE_ENDPOINT || 'https://fra.cloud.appwrite.io/v1',
     projectId: process.env.APPWRITE_PROJECT_ID || '693a5d38001eb9c27cca',
     apiKey: process.env.APPWRITE_API_KEY || '',
-    databaseId: process.env.APPWRITE_DATABASE_ID || 'ssm_database',
+    databaseId: process.env.APPWRITE_DATABASE_ID || '693aa86e00236cd739f1',
 };
 
 // Initialize Appwrite Client for server-side operations
