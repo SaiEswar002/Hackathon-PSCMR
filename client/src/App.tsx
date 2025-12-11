@@ -8,6 +8,8 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { TopNavbar } from "@/components/top-navbar";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { authService } from "@/lib/appwrite-services/auth.service";
+import { usersService } from "@/lib/appwrite-services/users.service";
 
 import Home from "@/pages/home";
 import Login from "@/pages/login";
@@ -20,6 +22,7 @@ import Dashboard from "@/pages/dashboard";
 import Events from "@/pages/events";
 import Search from "@/pages/search";
 import Groups from "@/pages/groups";
+import AdminUsers from "@/pages/admin-users";
 import NotFound from "@/pages/not-found";
 
 import type { User } from "@shared/schema";
@@ -31,58 +34,94 @@ function AppContent() {
   const { toast } = useToast();
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("ssm-user");
-    if (storedUser) {
+    // Check for active Appwrite session on mount
+    const checkSession = async () => {
       try {
-        setCurrentUser(JSON.parse(storedUser));
-      } catch {
-        localStorage.removeItem("ssm-user");
+        const appwriteUser = await authService.getCurrentUser();
+        if (appwriteUser) {
+          // Get full user profile from database
+          const userProfile = await usersService.getUserByEmail(appwriteUser.email);
+          if (userProfile) {
+            setCurrentUser(userProfile);
+          }
+        }
+      } catch (error) {
+        console.log("No active session");
+      } finally {
+        setIsLoading(false);
       }
-    }
-    setIsLoading(false);
+    };
+    checkSession();
   }, []);
 
   const handleLogin = async (email: string, password: string) => {
     try {
-      const response = await apiRequest("POST", "/api/auth/login", { email, password });
-      const user = await response.json();
-      setCurrentUser(user);
-      localStorage.setItem("ssm-user", JSON.stringify(user));
-      toast({ title: "Welcome back!" });
-      setLocation("/");
+      // Login with Appwrite
+      await authService.login({ email, password });
+
+      // Get user profile from database
+      const userProfile = await usersService.getUserByEmail(email);
+      if (userProfile) {
+        setCurrentUser(userProfile);
+        toast({ title: "Welcome back!" });
+        setLocation("/");
+      } else {
+        throw new Error("User profile not found");
+      }
     } catch (error) {
+      console.error("Login error:", error);
       toast({ title: "Invalid credentials", variant: "destructive" });
     }
   };
 
   const handleSignup = async (data: any) => {
     try {
-      const response = await apiRequest("POST", "/api/auth/signup", {
-        username: data.email,
+      // Create Appwrite Auth account
+      const appwriteUser = await authService.signUp({
+        email: data.email,
         password: data.password,
+        fullName: data.fullName,
+      });
+
+      // Create user profile document in database
+      const userProfile = await usersService.createUser({
+        userId: appwriteUser.$id,
+        username: data.email,
         fullName: data.fullName,
         email: data.email,
         academicYear: data.academicYear,
         department: data.department,
-        skillsToShare: data.skillsToShare,
-        skillsToLearn: data.skillsToLearn,
-        interests: data.interests,
+        bio: null,
+        avatarUrl: null,
+        bannerUrl: null,
+        skillsToShare: data.skillsToShare || [],
+        skillsToLearn: data.skillsToLearn || [],
+        interests: data.interests || [],
+        portfolioLinks: [],
       });
-      const user = await response.json();
-      setCurrentUser(user);
-      localStorage.setItem("ssm-user", JSON.stringify(user));
+
+      setCurrentUser(userProfile);
       toast({ title: "Account created successfully!" });
       setLocation("/");
-    } catch (error) {
-      toast({ title: "Failed to create account", variant: "destructive" });
+    } catch (error: any) {
+      console.error("Signup error:", error);
+      const errorMessage = error?.message || "Failed to create account";
+      toast({ title: errorMessage, variant: "destructive" });
     }
   };
 
-  const handleLogout = () => {
-    setCurrentUser(null);
-    localStorage.removeItem("ssm-user");
-    toast({ title: "Logged out successfully" });
-    setLocation("/");
+  const handleLogout = async () => {
+    try {
+      await authService.logout();
+      setCurrentUser(null);
+      toast({ title: "Logged out successfully" });
+      setLocation("/");
+    } catch (error) {
+      console.error("Logout error:", error);
+      toast({ title: "Logged out", variant: "default" });
+      setCurrentUser(null);
+      setLocation("/");
+    }
   };
 
   if (isLoading) {
@@ -130,6 +169,9 @@ function AppContent() {
             </Route>
             <Route path="/groups">
               <Groups currentUser={currentUser} />
+            </Route>
+            <Route path="/admin/users">
+              <AdminUsers />
             </Route>
             <Route path="/profile/:id?">
               <Profile currentUser={currentUser} />

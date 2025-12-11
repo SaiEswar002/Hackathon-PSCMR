@@ -19,6 +19,13 @@ class AuthService {
      */
     async signUp(data: SignUpData) {
         try {
+            // Logout any existing session first
+            try {
+                await this.logout();
+            } catch {
+                // No active session, continue
+            }
+
             const response = await account.create(
                 ID.unique(),
                 data.email,

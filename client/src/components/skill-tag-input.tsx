@@ -1,4 +1,4 @@
-import { useState, KeyboardEvent } from "react";
+import { useState, KeyboardEvent, forwardRef, useImperativeHandle } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { X } from "lucide-react";
@@ -12,14 +12,18 @@ interface SkillTagInputProps {
   "data-testid"?: string;
 }
 
-export function SkillTagInput({
+export interface SkillTagInputRef {
+  commitPending: () => string[];
+}
+
+export const SkillTagInput = forwardRef<SkillTagInputRef, SkillTagInputProps>(({
   value,
   onChange,
   placeholder = "Add a skill and press Enter",
   maxTags = 10,
   className,
   "data-testid": testId,
-}: SkillTagInputProps) {
+}, ref) => {
   const [inputValue, setInputValue] = useState("");
 
   const addTag = (tag: string) => {
@@ -34,12 +38,33 @@ export function SkillTagInput({
     onChange(value.filter((tag) => tag !== tagToRemove));
   };
 
+  // Expose method to commit any pending input value and return the new array
+  useImperativeHandle(ref, () => ({
+    commitPending: () => {
+      const trimmedInput = inputValue.trim().toLowerCase();
+      if (trimmedInput && !value.includes(trimmedInput) && value.length < maxTags) {
+        const newValue = [...value, trimmedInput];
+        onChange(newValue);
+        setInputValue("");
+        return newValue;
+      }
+      return value;
+    }
+  }));
+
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
       addTag(inputValue);
     } else if (e.key === "Backspace" && !inputValue && value.length > 0) {
       removeTag(value[value.length - 1]);
+    }
+  };
+
+  const handleBlur = () => {
+    // Auto-add the typed text when user leaves the input field
+    if (inputValue.trim()) {
+      addTag(inputValue);
     }
   };
 
@@ -70,6 +95,7 @@ export function SkillTagInput({
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={handleKeyDown}
+          onBlur={handleBlur}
           placeholder={placeholder}
           className="h-9"
           data-testid={testId}
@@ -77,4 +103,6 @@ export function SkillTagInput({
       )}
     </div>
   );
-}
+});
+
+SkillTagInput.displayName = "SkillTagInput";

@@ -8,8 +8,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { SkillTagInput } from "@/components/skill-tag-input";
+import { SkillTagInput, SkillTagInputRef } from "@/components/skill-tag-input";
 import { SiGoogle, SiGithub, SiLinkedin } from "react-icons/si";
+import { useRef } from "react";
 
 const signupSchema = z.object({
   fullName: z.string().min(2, "Name must be at least 2 characters"),
@@ -39,6 +40,10 @@ const academicYears = [
 ];
 
 export default function Signup({ onSignup, isLoading }: SignupProps) {
+  const skillsToShareRef = useRef<SkillTagInputRef>(null);
+  const skillsToLearnRef = useRef<SkillTagInputRef>(null);
+  const interestsRef = useRef<SkillTagInputRef>(null);
+
   const form = useForm<SignupForm>({
     resolver: zodResolver(signupSchema),
     defaultValues: {
@@ -52,6 +57,23 @@ export default function Signup({ onSignup, isLoading }: SignupProps) {
       interests: [],
     },
   });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Commit any pending input values and get the updated arrays
+    const newSkillsToShare = skillsToShareRef.current?.commitPending() ?? form.getValues('skillsToShare');
+    const newSkillsToLearn = skillsToLearnRef.current?.commitPending() ?? form.getValues('skillsToLearn');
+    const newInterests = interestsRef.current?.commitPending() ?? form.getValues('interests');
+
+    // Update form values synchronously
+    form.setValue('skillsToShare', newSkillsToShare, { shouldValidate: true });
+    form.setValue('skillsToLearn', newSkillsToLearn, { shouldValidate: true });
+    form.setValue('interests', newInterests, { shouldValidate: true });
+
+    // Trigger form validation and submission
+    form.handleSubmit(onSignup)();
+  };
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4 py-8">
@@ -87,7 +109,7 @@ export default function Signup({ onSignup, isLoading }: SignupProps) {
           </div>
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSignup)} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
@@ -177,6 +199,7 @@ export default function Signup({ onSignup, isLoading }: SignupProps) {
                     <FormLabel>Skills to Share</FormLabel>
                     <FormControl>
                       <SkillTagInput
+                        ref={skillsToShareRef}
                         value={field.value}
                         onChange={field.onChange}
                         placeholder="Add skills you can teach..."
@@ -196,6 +219,7 @@ export default function Signup({ onSignup, isLoading }: SignupProps) {
                     <FormLabel>Skills to Learn</FormLabel>
                     <FormControl>
                       <SkillTagInput
+                        ref={skillsToLearnRef}
                         value={field.value}
                         onChange={field.onChange}
                         placeholder="Add skills you want to learn..."
@@ -215,6 +239,7 @@ export default function Signup({ onSignup, isLoading }: SignupProps) {
                     <FormLabel>Interests (optional)</FormLabel>
                     <FormControl>
                       <SkillTagInput
+                        ref={interestsRef}
                         value={field.value}
                         onChange={field.onChange}
                         placeholder="Add your interests..."
