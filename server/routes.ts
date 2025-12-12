@@ -9,7 +9,7 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
-  
+
   // Auth routes
   const signupSchema = z.object({
     username: z.string().min(1),
@@ -79,7 +79,7 @@ export async function registerRoutes(
 
       const { email, password } = parsed.data;
       const user = await storage.getUserByEmail(email);
-      
+
       if (!user) {
         return res.status(401).json({ error: "Invalid credentials" });
       }
@@ -145,10 +145,30 @@ export async function registerRoutes(
   // Posts routes
   app.get("/api/posts", async (req, res) => {
     try {
-      const posts = await storage.getPostsWithAuthors();
+      const moduleFilter = req.query.selectedModule as string | undefined;
+      const posts = await storage.getPostsWithAuthors(moduleFilter);
       res.json(posts.map(p => ({ ...p, author: sanitizeUser(p.author) })));
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch posts" });
+    }
+  });
+
+  // Debug endpoint to see all posts with tags
+  app.get("/api/debug/posts", async (req, res) => {
+    try {
+      const posts = await storage.getAllPosts();
+      const postsWithTags = posts.map(p => ({
+        id: p.id,
+        content: p.content.substring(0, 50) + "...",
+        tags: p.tags,
+        authorId: p.authorId
+      }));
+      res.json({
+        total: posts.length,
+        posts: postsWithTags
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch debug posts" });
     }
   });
 

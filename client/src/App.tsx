@@ -12,6 +12,7 @@ import { authService } from "@/lib/appwrite-services/auth.service";
 import { usersService } from "@/lib/appwrite-services/users.service";
 
 import Home from "@/pages/home";
+import Landing from "@/pages/landing";
 import Login from "@/pages/login";
 import Signup from "@/pages/signup";
 import Profile from "@/pages/profile";
@@ -85,7 +86,6 @@ function AppContent() {
 
       // Create user profile document in database
       const userProfile = await usersService.createUser({
-        userId: appwriteUser.$id,
         username: data.email,
         fullName: data.fullName,
         email: data.email,
@@ -144,42 +144,50 @@ function AppContent() {
           <Signup onSignup={handleSignup} />
         </Route>
         <Route>
-          <TopNavbar currentUser={currentUser} onLogout={handleLogout} />
-          <Switch>
+          {currentUser ? (
+            <>
+              <TopNavbar currentUser={currentUser} onLogout={handleLogout} />
+              <Switch>
+                <Route path="/">
+                  <Home currentUser={currentUser} />
+                </Route>
+                <Route path="/network">
+                  <Network currentUser={currentUser} />
+                </Route>
+                <Route path="/projects">
+                  <Projects currentUser={currentUser} />
+                </Route>
+                <Route path="/messages">
+                  <Messages currentUser={currentUser} />
+                </Route>
+                <Route path="/dashboard">
+                  <Dashboard currentUser={currentUser} />
+                </Route>
+                <Route path="/events">
+                  <Events currentUser={currentUser} />
+                </Route>
+                <Route path="/search">
+                  <Search currentUser={currentUser} />
+                </Route>
+                <Route path="/groups">
+                  <Groups currentUser={currentUser} />
+                </Route>
+                <Route path="/admin/users">
+                  <AdminUsers />
+                </Route>
+                <Route path="/profile/:id?">
+                  <Profile currentUser={currentUser} />
+                </Route>
+                <Route>
+                  <NotFound />
+                </Route>
+              </Switch>
+            </>
+          ) : (
             <Route path="/">
-              <Home currentUser={currentUser} />
+              <Landing />
             </Route>
-            <Route path="/network">
-              <Network currentUser={currentUser} />
-            </Route>
-            <Route path="/projects">
-              <Projects currentUser={currentUser} />
-            </Route>
-            <Route path="/messages">
-              <Messages currentUser={currentUser} />
-            </Route>
-            <Route path="/dashboard">
-              <Dashboard currentUser={currentUser} />
-            </Route>
-            <Route path="/events">
-              <Events currentUser={currentUser} />
-            </Route>
-            <Route path="/search">
-              <Search currentUser={currentUser} />
-            </Route>
-            <Route path="/groups">
-              <Groups currentUser={currentUser} />
-            </Route>
-            <Route path="/admin/users">
-              <AdminUsers />
-            </Route>
-            <Route path="/profile/:id?">
-              <Profile currentUser={currentUser} />
-            </Route>
-            <Route>
-              <NotFound />
-            </Route>
-          </Switch>
+          )}
         </Route>
       </Switch>
       <Toaster />

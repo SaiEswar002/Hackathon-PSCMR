@@ -1,4 +1,4 @@
-import { 
+import {
   type User, type InsertUser,
   type Post, type InsertPost,
   type Connection, type InsertConnection,
@@ -25,7 +25,7 @@ export interface IStorage {
   getPost(id: string): Promise<Post | undefined>;
   getAllPosts(): Promise<Post[]>;
   getPostsByAuthor(authorId: string): Promise<Post[]>;
-  getPostsWithAuthors(): Promise<PostWithAuthor[]>;
+  getPostsWithAuthors(moduleFilter?: string): Promise<PostWithAuthor[]>;
   createPost(post: InsertPost): Promise<Post>;
   updatePost(id: string, data: Partial<Post>): Promise<Post | undefined>;
   likePost(postId: string, userId: string): Promise<Post | undefined>;
@@ -181,55 +181,258 @@ export class MemStorage implements IStorage {
 
     demoUsers.forEach(user => this.users.set(user.id, user));
 
-    // Seed demo posts
+    // Seed demo posts with comprehensive coverage of all modules
     const demoPosts: Post[] = [
+      // Business Module Posts
       {
-        id: "post-1",
-        authorId: "user-1",
-        content: "Just finished building a recommendation system using collaborative filtering! Looking for someone to help with the frontend. Any React developers interested in collaborating?",
+        id: "post-business-1",
+        authorId: "user-3",
+        content: "🚀 Looking for a business partner to launch a sustainable fashion startup! I have the design skills and market research ready. Need someone with finance/operations expertise. Let's build something impactful together!",
         postType: "project_invite",
-        tags: ["machine-learning", "react", "collaboration"],
+        tags: ["business", "startup", "fashion", "sustainability"],
         imageUrl: null,
-        likesCount: 24,
-        commentsCount: 8,
-        sharesCount: 3,
-        createdAt: new Date(Date.now() - 3600000).toISOString(),
+        likesCount: 34,
+        commentsCount: 12,
+        sharesCount: 5,
+        createdAt: new Date(Date.now() - 2 * 24 * 3600000).toISOString(),
       },
       {
-        id: "post-2",
-        authorId: "user-2",
-        content: "Offering free UI/UX review sessions this week! If you're working on a project and need design feedback, drop a comment below. Let's help each other grow!",
+        id: "post-business-2",
+        authorId: "user-1",
+        content: "📊 Just completed a market analysis on the EdTech sector in India. The growth potential is massive! Happy to share insights with anyone interested in this space. DM me!",
         postType: "skill_offer",
-        tags: ["ui-design", "ux", "mentorship"],
+        tags: ["business", "edtech", "market-research"],
+        imageUrl: null,
+        likesCount: 28,
+        commentsCount: 8,
+        sharesCount: 4,
+        createdAt: new Date(Date.now() - 3 * 24 * 3600000).toISOString(),
+      },
+      {
+        id: "post-business-3",
+        authorId: "user-2",
+        content: "💼 Seeking mentorship in business strategy and financial modeling. I'm working on a SaaS product and need guidance on pricing strategies and revenue projections. Any experienced founders willing to help?",
+        postType: "learning_request",
+        tags: ["business", "saas", "strategy"],
+        imageUrl: null,
+        likesCount: 19,
+        commentsCount: 6,
+        sharesCount: 2,
+        createdAt: new Date(Date.now() - 4 * 24 * 3600000).toISOString(),
+      },
+
+      // Startup Module Posts
+      {
+        id: "post-startup-1",
+        authorId: "user-3",
+        content: "🎯 Our college startup just got accepted into an accelerator program! Looking for 2 developers (React + Node.js) to join our team. Equity-based initially. Building a platform to connect freelancers with local businesses.",
+        postType: "project_invite",
+        tags: ["startup", "hiring", "react", "nodejs"],
         imageUrl: null,
         likesCount: 45,
-        commentsCount: 12,
-        sharesCount: 7,
-        createdAt: new Date(Date.now() - 7200000).toISOString(),
+        commentsCount: 18,
+        sharesCount: 9,
+        createdAt: new Date(Date.now() - 1 * 24 * 3600000).toISOString(),
       },
       {
-        id: "post-3",
-        authorId: "user-3",
-        content: "Hosting a startup pitch workshop next Friday! Learn how to craft compelling pitches and get feedback from actual investors. Limited spots available.",
+        id: "post-startup-2",
+        authorId: "user-1",
+        content: "💡 Idea validation session this Friday at 4 PM! Bringing together aspiring entrepreneurs to pitch ideas and get feedback. Free pizza 🍕 Location: Innovation Lab. Comment if you're interested!",
         postType: "workshop",
-        tags: ["startup", "pitching", "entrepreneurship"],
+        tags: ["startup", "entrepreneurship", "networking"],
         imageUrl: null,
         likesCount: 67,
         commentsCount: 23,
         sharesCount: 15,
+        createdAt: new Date(Date.now() - 5 * 24 * 3600000).toISOString(),
+      },
+      {
+        id: "post-startup-3",
+        authorId: "user-4",
+        content: "📈 Bootstrapped our MVP to 100 users in 2 weeks! Here's what worked: 1) Direct outreach on LinkedIn 2) College WhatsApp groups 3) Solving a real pain point. Happy to share our playbook with fellow founders!",
+        postType: "skill_offer",
+        tags: ["startup", "growth", "mvp"],
+        imageUrl: null,
+        likesCount: 52,
+        commentsCount: 15,
+        sharesCount: 11,
+        createdAt: new Date(Date.now() - 6 * 24 * 3600000).toISOString(),
+      },
+
+      // Coding Module Posts
+      {
+        id: "post-coding-1",
+        authorId: "user-4",
+        content: "⚡ Built a real-time collaborative code editor using WebSockets and Monaco Editor! Check out the demo. Open source and looking for contributors. Tech stack: React, Node.js, Socket.io",
+        postType: "project_invite",
+        tags: ["coding", "webdev", "opensource", "react"],
+        imageUrl: null,
+        likesCount: 38,
+        commentsCount: 14,
+        sharesCount: 7,
+        createdAt: new Date(Date.now() - 7200000).toISOString(),
+      },
+      {
+        id: "post-coding-2",
+        authorId: "user-1",
+        content: "🐍 Hosting a Python workshop next week covering: Data structures, Algorithms, and LeetCode problem-solving strategies. Perfect for placement prep! Limited seats. Register in comments 👇",
+        postType: "workshop",
+        tags: ["coding", "python", "algorithms", "placements"],
+        imageUrl: null,
+        likesCount: 61,
+        commentsCount: 27,
+        sharesCount: 13,
         createdAt: new Date(Date.now() - 14400000).toISOString(),
       },
       {
-        id: "post-4",
-        authorId: "user-4",
-        content: "Looking to learn about blockchain development and smart contracts. Anyone experienced with Solidity willing to do a knowledge exchange? I can teach React/Node.js in return!",
-        postType: "learning_request",
-        tags: ["blockchain", "solidity", "web3"],
+        id: "post-coding-3",
+        authorId: "user-2",
+        content: "🔥 Just solved a tricky system design problem: Designing Instagram's feed. Key learnings: Fanout on write vs read, caching strategies, and database sharding. Want to discuss more system design concepts!",
+        postType: "skill_offer",
+        tags: ["coding", "system-design", "backend"],
         imageUrl: null,
-        likesCount: 18,
-        commentsCount: 5,
-        sharesCount: 2,
+        likesCount: 42,
+        commentsCount: 11,
+        sharesCount: 6,
+        createdAt: new Date(Date.now() - 21600000).toISOString(),
+      },
+      {
+        id: "post-coding-4",
+        authorId: "user-3",
+        content: "💻 Looking for someone experienced in Docker and Kubernetes to help me containerize my application. Can offer frontend development skills in exchange!",
+        postType: "learning_request",
+        tags: ["coding", "devops", "docker", "kubernetes"],
+        imageUrl: null,
+        likesCount: 24,
+        commentsCount: 9,
+        sharesCount: 3,
         createdAt: new Date(Date.now() - 28800000).toISOString(),
+      },
+
+      // Design Module Posts
+      {
+        id: "post-design-1",
+        authorId: "user-2",
+        content: "🎨 Redesigned our college fest website with a dark mode and glassmorphism effects! Figma file available for anyone who wants to learn. Also happy to review your designs!",
+        postType: "skill_offer",
+        tags: ["design", "ui-ux", "figma", "webdesign"],
+        imageUrl: null,
+        likesCount: 48,
+        commentsCount: 16,
+        sharesCount: 8,
+        createdAt: new Date(Date.now() - 36000000).toISOString(),
+      },
+      {
+        id: "post-design-2",
+        authorId: "user-1",
+        content: "✨ UI/UX Design Challenge: Design a mobile app for campus food delivery in 48 hours! Prizes for top 3 designs. Theme: Minimalist & Fast. Deadline: Sunday midnight. Drop your Behance links!",
+        postType: "workshop",
+        tags: ["design", "ui-ux", "challenge", "mobile"],
+        imageUrl: null,
+        likesCount: 55,
+        commentsCount: 21,
+        sharesCount: 12,
+        createdAt: new Date(Date.now() - 43200000).toISOString(),
+      },
+      {
+        id: "post-design-3",
+        authorId: "user-3",
+        content: "🖌️ Need a graphic designer for our startup's branding - logo, color palette, and social media templates. It's a paid opportunity! Experience with brand identity preferred. Portfolio required.",
+        postType: "project_invite",
+        tags: ["design", "branding", "graphics", "startup"],
+        imageUrl: null,
+        likesCount: 31,
+        commentsCount: 13,
+        sharesCount: 5,
+        createdAt: new Date(Date.now() - 50400000).toISOString(),
+      },
+
+      // Marketing Module Posts
+      {
+        id: "post-marketing-1",
+        authorId: "user-4",
+        content: "📱 Grew our Instagram page from 0 to 5K followers in 3 months using these strategies: Reels consistency, trending audio, and engagement pods. AMA about social media marketing!",
+        postType: "skill_offer",
+        tags: ["marketing", "social-media", "instagram", "growth"],
+        imageUrl: null,
+        likesCount: 64,
+        commentsCount: 28,
+        sharesCount: 16,
+        createdAt: new Date(Date.now() - 57600000).toISOString(),
+      },
+      {
+        id: "post-marketing-2",
+        authorId: "user-3",
+        content: "🎯 Looking for a marketing co-founder for my EdTech startup. Need someone who understands content marketing, SEO, and community building. Let's scale together!",
+        postType: "project_invite",
+        tags: ["marketing", "startup", "edtech", "content"],
+        imageUrl: null,
+        likesCount: 37,
+        commentsCount: 15,
+        sharesCount: 7,
+        createdAt: new Date(Date.now() - 64800000).toISOString(),
+      },
+      {
+        id: "post-marketing-3",
+        authorId: "user-2",
+        content: "📊 Free workshop on Google Analytics 4 and conversion tracking this Saturday! Learn how to measure campaign performance and optimize your marketing funnel. Zoom link in bio.",
+        postType: "workshop",
+        tags: ["marketing", "analytics", "google-analytics"],
+        imageUrl: null,
+        likesCount: 43,
+        commentsCount: 17,
+        sharesCount: 9,
+        createdAt: new Date(Date.now() - 72000000).toISOString(),
+      },
+
+      // AI/ML Module Posts
+      {
+        id: "post-aiml-1",
+        authorId: "user-1",
+        content: "🤖 Built a sentiment analysis model that achieved 94% accuracy on Twitter data! Used BERT and fine-tuned it on Indian English. Code on GitHub. Looking for collaborators to deploy it as an API!",
+        postType: "project_invite",
+        tags: ["aiml", "nlp", "machine-learning", "bert"],
+        imageUrl: null,
+        likesCount: 58,
+        commentsCount: 22,
+        sharesCount: 14,
+        createdAt: new Date(Date.now() - 79200000).toISOString(),
+      },
+      {
+        id: "post-aiml-2",
+        authorId: "user-3",
+        content: "🧠 Study group for Andrew Ng's Deep Learning Specialization starting next week! We'll meet twice a week to discuss concepts and work on projects together. Comment if interested!",
+        postType: "learning_request",
+        tags: ["aiml", "deep-learning", "study-group"],
+        imageUrl: null,
+        likesCount: 71,
+        commentsCount: 31,
+        sharesCount: 18,
+        createdAt: new Date(Date.now() - 86400000).toISOString(),
+      },
+      {
+        id: "post-aiml-3",
+        authorId: "user-4",
+        content: "⚡ Just deployed a computer vision model that detects potholes in real-time using YOLOv8! Accuracy: 89%. Planning to pitch this to the municipal corporation. Need help with the business proposal!",
+        postType: "skill_offer",
+        tags: ["aiml", "computer-vision", "yolo", "social-impact"],
+        imageUrl: null,
+        likesCount: 49,
+        commentsCount: 19,
+        sharesCount: 10,
+        createdAt: new Date(Date.now() - 93600000).toISOString(),
+      },
+      {
+        id: "post-aiml-4",
+        authorId: "user-2",
+        content: "🔬 Hosting a Kaggle competition walkthrough session - I'll explain my approach to the Titanic dataset that got me in the top 10%. Covers feature engineering, ensemble methods, and hyperparameter tuning.",
+        postType: "workshop",
+        tags: ["aiml", "kaggle", "data-science", "machine-learning"],
+        imageUrl: null,
+        likesCount: 66,
+        commentsCount: 25,
+        sharesCount: 15,
+        createdAt: new Date(Date.now() - 100800000).toISOString(),
       },
     ];
 
@@ -362,8 +565,8 @@ export class MemStorage implements IStorage {
 
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = randomUUID();
-    const user: User = { 
-      ...insertUser, 
+    const user: User = {
+      ...insertUser,
       id,
       profileViews: 0,
       connectionsCount: 0,
@@ -390,7 +593,7 @@ export class MemStorage implements IStorage {
   }
 
   async getAllPosts(): Promise<Post[]> {
-    return Array.from(this.posts.values()).sort((a, b) => 
+    return Array.from(this.posts.values()).sort((a, b) =>
       new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     );
   }
@@ -401,8 +604,16 @@ export class MemStorage implements IStorage {
       .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   }
 
-  async getPostsWithAuthors(): Promise<PostWithAuthor[]> {
-    const posts = await this.getAllPosts();
+  async getPostsWithAuthors(moduleFilter?: string): Promise<PostWithAuthor[]> {
+    let posts = await this.getAllPosts();
+
+    // Filter by module if specified
+    if (moduleFilter) {
+      posts = posts.filter(post =>
+        post.tags?.some(tag => tag.toLowerCase() === moduleFilter.toLowerCase())
+      );
+    }
+
     return Promise.all(posts.map(async post => {
       const author = await this.getUser(post.authorId);
       return { ...post, author: author! };
@@ -432,7 +643,7 @@ export class MemStorage implements IStorage {
       this.postLikes.set(postId, new Set());
     }
     const likes = this.postLikes.get(postId)!;
-    
+
     if (likes.has(userId)) {
       likes.delete(userId);
       post.likesCount = (post.likesCount || 0) - 1;
@@ -440,7 +651,7 @@ export class MemStorage implements IStorage {
       likes.add(userId);
       post.likesCount = (post.likesCount || 0) + 1;
     }
-    
+
     this.posts.set(postId, post);
     return post;
   }
@@ -459,10 +670,10 @@ export class MemStorage implements IStorage {
   async getConnectedUsers(userId: string): Promise<User[]> {
     const connections = await this.getConnectionsByUser(userId);
     const acceptedConnections = connections.filter(c => c.status === "accepted");
-    const connectedUserIds = acceptedConnections.map(c => 
+    const connectedUserIds = acceptedConnections.map(c =>
       c.userId === userId ? c.connectedUserId : c.userId
     );
-    return Promise.all(connectedUserIds.map(id => this.getUser(id))).then(users => 
+    return Promise.all(connectedUserIds.map(id => this.getUser(id))).then(users =>
       users.filter((u): u is User => u !== undefined)
     );
   }
@@ -548,7 +759,7 @@ export class MemStorage implements IStorage {
   }
 
   async getAllProjects(): Promise<Project[]> {
-    return Array.from(this.projects.values()).sort((a, b) => 
+    return Array.from(this.projects.values()).sort((a, b) =>
       new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     );
   }
@@ -604,7 +815,7 @@ export class MemStorage implements IStorage {
   }
 
   async getAllEvents(): Promise<Event[]> {
-    return Array.from(this.events.values()).sort((a, b) => 
+    return Array.from(this.events.values()).sort((a, b) =>
       new Date(a.date).getTime() - new Date(b.date).getTime()
     );
   }
@@ -669,14 +880,14 @@ export class MemStorage implements IStorage {
       );
 
       const matchingSkills = [...new Set([...skillsTheyCanTeach, ...skillsYouCanTeach])];
-      
+
       // Calculate compatibility score
       const maxPossibleMatches = Math.max(
         (currentUser.skillsToLearn?.length || 0) + (currentUser.skillsToShare?.length || 0),
         1
       );
       const compatibilityScore = Math.min(
-        Math.round((matchingSkills.length / maxPossibleMatches) * 100 + 
+        Math.round((matchingSkills.length / maxPossibleMatches) * 100 +
           (user.interests?.some(i => currentUser.interests?.includes(i)) ? 20 : 0)),
         99
       );
