@@ -70,12 +70,6 @@ export function SignupPage() {
             return false;
         }
 
-        // Check for university email (optional)
-        if (!email.endsWith('.edu')) {
-            setEmailError('Please use your university email (.edu)');
-            return false;
-        }
-
         setEmailError(null);
         return true;
     };
@@ -286,8 +280,8 @@ export function SignupPage() {
                                     onBlur={() => validateFullName(fullName)}
                                     placeholder="John Doe"
                                     className={`w-full px-4 py-3 rounded-lg border-2 transition-colors ${fullNameError
-                                            ? 'border-red-300 focus:border-red-500 focus:ring-red-200'
-                                            : 'border-gray-200 focus:border-purple-500 focus:ring-purple-200'
+                                        ? 'border-red-300 focus:border-red-500 focus:ring-red-200'
+                                        : 'border-gray-200 focus:border-purple-500 focus:ring-purple-200'
                                         } focus:ring-4 focus:outline-none`}
                                     disabled={loading}
                                 />
@@ -324,8 +318,8 @@ export function SignupPage() {
                                     onBlur={() => validateEmail(email)}
                                     placeholder="you@university.edu"
                                     className={`w-full px-4 py-3 rounded-lg border-2 transition-colors ${emailError
-                                            ? 'border-red-300 focus:border-red-500 focus:ring-red-200'
-                                            : 'border-gray-200 focus:border-purple-500 focus:ring-purple-200'
+                                        ? 'border-red-300 focus:border-red-500 focus:ring-red-200'
+                                        : 'border-gray-200 focus:border-purple-500 focus:ring-purple-200'
                                         } focus:ring-4 focus:outline-none`}
                                     disabled={loading}
                                 />
@@ -363,8 +357,8 @@ export function SignupPage() {
                                         onBlur={() => validatePassword(password)}
                                         placeholder="••••••••"
                                         className={`w-full px-4 py-3 pr-12 rounded-lg border-2 transition-colors ${passwordError
-                                                ? 'border-red-300 focus:border-red-500 focus:ring-red-200'
-                                                : 'border-gray-200 focus:border-purple-500 focus:ring-purple-200'
+                                            ? 'border-red-300 focus:border-red-500 focus:ring-red-200'
+                                            : 'border-gray-200 focus:border-purple-500 focus:ring-purple-200'
                                             } focus:ring-4 focus:outline-none`}
                                         disabled={loading}
                                     />
@@ -450,8 +444,8 @@ export function SignupPage() {
                                         onBlur={() => validateConfirmPassword(confirmPassword)}
                                         placeholder="••••••••"
                                         className={`w-full px-4 py-3 pr-12 rounded-lg border-2 transition-colors ${confirmPasswordError
-                                                ? 'border-red-300 focus:border-red-500 focus:ring-red-200'
-                                                : 'border-gray-200 focus:border-purple-500 focus:ring-purple-200'
+                                            ? 'border-red-300 focus:border-red-500 focus:ring-red-200'
+                                            : 'border-gray-200 focus:border-purple-500 focus:ring-purple-200'
                                             } focus:ring-4 focus:outline-none`}
                                         disabled={loading}
                                     />
