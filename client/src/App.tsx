@@ -86,6 +86,7 @@ function AppContent() {
 
       // Create user profile document in database
       const userProfile = await usersService.createUser({
+        userId: appwriteUser.$id, // Link to Appwrite Auth account
         username: data.email,
         fullName: data.fullName,
         email: data.email,
@@ -98,7 +99,7 @@ function AppContent() {
         skillsToLearn: data.skillsToLearn || [],
         interests: data.interests || [],
         portfolioLinks: [],
-      });
+      } as any); // Type assertion for Appwrite-specific fields
 
       setCurrentUser(userProfile);
       toast({ title: "Account created successfully!" });
