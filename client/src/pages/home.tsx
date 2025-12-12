@@ -61,7 +61,7 @@ export default function Home({ currentUser }: HomeProps) {
   });
 
   const createPostMutation = useMutation({
-    mutationFn: async (postData: Omit<InsertPost, "authorId" | "createdAt">) => {
+    mutationFn: async (postData: Omit<InsertPost, "authorId" | "createdAt" | "authorName" | "authorAvatar">) => {
       if (!currentUser) throw new Error("You must be logged in to create a post");
 
       const newPost: InsertPost = {

@@ -8,7 +8,7 @@ import type { User, InsertPost } from "@shared/schema";
 
 interface PostCreationProps {
   currentUser: User | null;
-  onSubmit: (post: Omit<InsertPost, "authorId" | "createdAt">) => void;
+  onSubmit: (post: Omit<InsertPost, "authorId" | "createdAt" | "authorName" | "authorAvatar">) => void;
   isLoading?: boolean;
 }
 
