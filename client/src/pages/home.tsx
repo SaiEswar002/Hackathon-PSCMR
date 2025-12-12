@@ -67,6 +67,8 @@ export default function Home({ currentUser }: HomeProps) {
       const newPost: InsertPost = {
         ...postData,
         authorId: currentUser.id,
+        authorName: currentUser.fullName,
+        authorAvatar: currentUser.avatarUrl,
         createdAt: new Date().toISOString(),
       };
 
@@ -78,7 +80,11 @@ export default function Home({ currentUser }: HomeProps) {
     },
     onError: (error: any) => {
       console.error("Create post error:", error);
-      toast({ title: "Failed to create post", variant: "destructive" });
+      toast({
+        title: "Failed to create post",
+        description: error.message || "Unknown error. Check console.",
+        variant: "destructive"
+      });
     },
   });
 

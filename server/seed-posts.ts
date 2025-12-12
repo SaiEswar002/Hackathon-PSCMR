@@ -157,11 +157,14 @@ async function seedPosts() {
         for (const postData of samplePosts) {
             // Use a random user if the specified author doesn't exist
             const authorExists = users.find(u => u.id === postData.authorId);
-            const authorId = authorExists ? postData.authorId : users[Math.floor(Math.random() * users.length)].id;
+            const selectedAuthor = authorExists || users[Math.floor(Math.random() * users.length)];
+            const authorId = selectedAuthor.id;
 
             const post = await storage.createPost({
                 ...postData,
                 authorId,
+                authorName: selectedAuthor.fullName,
+                authorAvatar: selectedAuthor.avatarUrl,
                 createdAt: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(), // Random time in last 7 days
                 likesCount: Math.floor(Math.random() * 50),
                 commentsCount: Math.floor(Math.random() * 20),

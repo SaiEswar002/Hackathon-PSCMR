@@ -187,6 +187,8 @@ export class MemStorage implements IStorage {
       {
         id: "post-business-1",
         authorId: "user-3",
+        authorName: "James Wilson",
+        authorAvatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face",
         content: "🚀 Looking for a business partner to launch a sustainable fashion startup! I have the design skills and market research ready. Need someone with finance/operations expertise. Let's build something impactful together!",
         postType: "project_invite",
         tags: ["business", "startup", "fashion", "sustainability"],
@@ -199,6 +201,8 @@ export class MemStorage implements IStorage {
       {
         id: "post-business-2",
         authorId: "user-1",
+        authorName: "Alex Chen",
+        authorAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
         content: "📊 Just completed a market analysis on the EdTech sector in India. The growth potential is massive! Happy to share insights with anyone interested in this space. DM me!",
         postType: "skill_offer",
         tags: ["business", "edtech", "market-research"],
@@ -211,6 +215,8 @@ export class MemStorage implements IStorage {
       {
         id: "post-business-3",
         authorId: "user-2",
+        authorName: "Sarah Miller",
+        authorAvatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=face",
         content: "💼 Seeking mentorship in business strategy and financial modeling. I'm working on a SaaS product and need guidance on pricing strategies and revenue projections. Any experienced founders willing to help?",
         postType: "learning_request",
         tags: ["business", "saas", "strategy"],
@@ -225,6 +231,8 @@ export class MemStorage implements IStorage {
       {
         id: "post-startup-1",
         authorId: "user-3",
+        authorName: "James Wilson",
+        authorAvatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face",
         content: "🎯 Our college startup just got accepted into an accelerator program! Looking for 2 developers (React + Node.js) to join our team. Equity-based initially. Building a platform to connect freelancers with local businesses.",
         postType: "project_invite",
         tags: ["startup", "hiring", "react", "nodejs"],
@@ -237,6 +245,8 @@ export class MemStorage implements IStorage {
       {
         id: "post-startup-2",
         authorId: "user-1",
+        authorName: "Alex Chen",
+        authorAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
         content: "💡 Idea validation session this Friday at 4 PM! Bringing together aspiring entrepreneurs to pitch ideas and get feedback. Free pizza 🍕 Location: Innovation Lab. Comment if you're interested!",
         postType: "workshop",
         tags: ["startup", "entrepreneurship", "networking"],
@@ -249,6 +259,8 @@ export class MemStorage implements IStorage {
       {
         id: "post-startup-3",
         authorId: "user-4",
+        authorName: "Maya Patel",
+        authorAvatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
         content: "📈 Bootstrapped our MVP to 100 users in 2 weeks! Here's what worked: 1) Direct outreach on LinkedIn 2) College WhatsApp groups 3) Solving a real pain point. Happy to share our playbook with fellow founders!",
         postType: "skill_offer",
         tags: ["startup", "growth", "mvp"],
@@ -263,6 +275,8 @@ export class MemStorage implements IStorage {
       {
         id: "post-coding-1",
         authorId: "user-4",
+        authorName: "Maya Patel",
+        authorAvatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
         content: "⚡ Built a real-time collaborative code editor using WebSockets and Monaco Editor! Check out the demo. Open source and looking for contributors. Tech stack: React, Node.js, Socket.io",
         postType: "project_invite",
         tags: ["coding", "webdev", "opensource", "react"],
@@ -275,6 +289,8 @@ export class MemStorage implements IStorage {
       {
         id: "post-coding-2",
         authorId: "user-1",
+        authorName: "Alex Chen",
+        authorAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
         content: "🐍 Hosting a Python workshop next week covering: Data structures, Algorithms, and LeetCode problem-solving strategies. Perfect for placement prep! Limited seats. Register in comments 👇",
         postType: "workshop",
         tags: ["coding", "python", "algorithms", "placements"],
@@ -287,6 +303,8 @@ export class MemStorage implements IStorage {
       {
         id: "post-coding-3",
         authorId: "user-2",
+        authorName: "Sarah Miller",
+        authorAvatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=face",
         content: "🔥 Just solved a tricky system design problem: Designing Instagram's feed. Key learnings: Fanout on write vs read, caching strategies, and database sharding. Want to discuss more system design concepts!",
         postType: "skill_offer",
         tags: ["coding", "system-design", "backend"],
@@ -299,6 +317,8 @@ export class MemStorage implements IStorage {
       {
         id: "post-coding-4",
         authorId: "user-3",
+        authorName: "James Wilson",
+        authorAvatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face",
         content: "💻 Looking for someone experienced in Docker and Kubernetes to help me containerize my application. Can offer frontend development skills in exchange!",
         postType: "learning_request",
         tags: ["coding", "devops", "docker", "kubernetes"],
@@ -313,6 +333,8 @@ export class MemStorage implements IStorage {
       {
         id: "post-design-1",
         authorId: "user-2",
+        authorName: "Sarah Miller",
+        authorAvatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=face",
         content: "🎨 Redesigned our college fest website with a dark mode and glassmorphism effects! Figma file available for anyone who wants to learn. Also happy to review your designs!",
         postType: "skill_offer",
         tags: ["design", "ui-ux", "figma", "webdesign"],
@@ -325,6 +347,8 @@ export class MemStorage implements IStorage {
       {
         id: "post-design-2",
         authorId: "user-1",
+        authorName: "Alex Chen",
+        authorAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
         content: "✨ UI/UX Design Challenge: Design a mobile app for campus food delivery in 48 hours! Prizes for top 3 designs. Theme: Minimalist & Fast. Deadline: Sunday midnight. Drop your Behance links!",
         postType: "workshop",
         tags: ["design", "ui-ux", "challenge", "mobile"],
@@ -337,6 +361,8 @@ export class MemStorage implements IStorage {
       {
         id: "post-design-3",
         authorId: "user-3",
+        authorName: "James Wilson",
+        authorAvatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face",
         content: "🖌️ Need a graphic designer for our startup's branding - logo, color palette, and social media templates. It's a paid opportunity! Experience with brand identity preferred. Portfolio required.",
         postType: "project_invite",
         tags: ["design", "branding", "graphics", "startup"],
@@ -351,6 +377,8 @@ export class MemStorage implements IStorage {
       {
         id: "post-marketing-1",
         authorId: "user-4",
+        authorName: "Maya Patel",
+        authorAvatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
         content: "📱 Grew our Instagram page from 0 to 5K followers in 3 months using these strategies: Reels consistency, trending audio, and engagement pods. AMA about social media marketing!",
         postType: "skill_offer",
         tags: ["marketing", "social-media", "instagram", "growth"],
@@ -363,6 +391,8 @@ export class MemStorage implements IStorage {
       {
         id: "post-marketing-2",
         authorId: "user-3",
+        authorName: "James Wilson",
+        authorAvatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face",
         content: "🎯 Looking for a marketing co-founder for my EdTech startup. Need someone who understands content marketing, SEO, and community building. Let's scale together!",
         postType: "project_invite",
         tags: ["marketing", "startup", "edtech", "content"],
@@ -375,6 +405,8 @@ export class MemStorage implements IStorage {
       {
         id: "post-marketing-3",
         authorId: "user-2",
+        authorName: "Sarah Miller",
+        authorAvatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=face",
         content: "📊 Free workshop on Google Analytics 4 and conversion tracking this Saturday! Learn how to measure campaign performance and optimize your marketing funnel. Zoom link in bio.",
         postType: "workshop",
         tags: ["marketing", "analytics", "google-analytics"],
@@ -389,6 +421,8 @@ export class MemStorage implements IStorage {
       {
         id: "post-aiml-1",
         authorId: "user-1",
+        authorName: "Alex Chen",
+        authorAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
         content: "🤖 Built a sentiment analysis model that achieved 94% accuracy on Twitter data! Used BERT and fine-tuned it on Indian English. Code on GitHub. Looking for collaborators to deploy it as an API!",
         postType: "project_invite",
         tags: ["aiml", "nlp", "machine-learning", "bert"],
@@ -401,6 +435,8 @@ export class MemStorage implements IStorage {
       {
         id: "post-aiml-2",
         authorId: "user-3",
+        authorName: "James Wilson",
+        authorAvatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face",
         content: "🧠 Study group for Andrew Ng's Deep Learning Specialization starting next week! We'll meet twice a week to discuss concepts and work on projects together. Comment if interested!",
         postType: "learning_request",
         tags: ["aiml", "deep-learning", "study-group"],
@@ -413,6 +449,8 @@ export class MemStorage implements IStorage {
       {
         id: "post-aiml-3",
         authorId: "user-4",
+        authorName: "Maya Patel",
+        authorAvatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
         content: "⚡ Just deployed a computer vision model that detects potholes in real-time using YOLOv8! Accuracy: 89%. Planning to pitch this to the municipal corporation. Need help with the business proposal!",
         postType: "skill_offer",
         tags: ["aiml", "computer-vision", "yolo", "social-impact"],
@@ -425,6 +463,8 @@ export class MemStorage implements IStorage {
       {
         id: "post-aiml-4",
         authorId: "user-2",
+        authorName: "Sarah Miller",
+        authorAvatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop&crop=face",
         content: "🔬 Hosting a Kaggle competition walkthrough session - I'll explain my approach to the Titanic dataset that got me in the top 10%. Covers feature engineering, ensemble methods, and hyperparameter tuning.",
         postType: "workshop",
         tags: ["aiml", "kaggle", "data-science", "machine-learning"],
@@ -570,7 +610,7 @@ export class MemStorage implements IStorage {
       id,
       profileViews: 0,
       connectionsCount: 0,
-    };
+    } as any;
     this.users.set(id, user);
     return user;
   }
@@ -622,7 +662,7 @@ export class MemStorage implements IStorage {
 
   async createPost(insertPost: InsertPost): Promise<Post> {
     const id = randomUUID();
-    const post: Post = { ...insertPost, id };
+    const post: Post = { ...insertPost, id } as any;
     this.posts.set(id, post);
     return post;
   }
@@ -680,7 +720,7 @@ export class MemStorage implements IStorage {
 
   async createConnection(insertConnection: InsertConnection): Promise<Connection> {
     const id = randomUUID();
-    const connection: Connection = { ...insertConnection, id };
+    const connection: Connection = { ...insertConnection, id } as any;
     this.connections.set(id, connection);
     return connection;
   }
@@ -706,7 +746,7 @@ export class MemStorage implements IStorage {
 
   async createMessage(insertMessage: InsertMessage): Promise<Message> {
     const id = randomUUID();
-    const message: Message = { ...insertMessage, id };
+    const message: Message = { ...insertMessage, id } as any;
     this.messages.set(id, message);
 
     // Update conversation's last message time
@@ -748,7 +788,7 @@ export class MemStorage implements IStorage {
 
   async createConversation(insertConversation: InsertConversation): Promise<Conversation> {
     const id = randomUUID();
-    const conversation: Conversation = { ...insertConversation, id };
+    const conversation: Conversation = { ...insertConversation, id } as any;
     this.conversations.set(id, conversation);
     return conversation;
   }
@@ -772,7 +812,7 @@ export class MemStorage implements IStorage {
 
   async createProject(insertProject: InsertProject): Promise<Project> {
     const id = randomUUID();
-    const project: Project = { ...insertProject, id };
+    const project: Project = { ...insertProject, id } as any;
     this.projects.set(id, project);
     return project;
   }
@@ -796,7 +836,7 @@ export class MemStorage implements IStorage {
 
   async createTask(insertTask: InsertTask): Promise<Task> {
     const id = randomUUID();
-    const task: Task = { ...insertTask, id };
+    const task: Task = { ...insertTask, id } as any;
     this.tasks.set(id, task);
     return task;
   }
@@ -822,7 +862,7 @@ export class MemStorage implements IStorage {
 
   async createEvent(insertEvent: InsertEvent): Promise<Event> {
     const id = randomUUID();
-    const event: Event = { ...insertEvent, id };
+    const event: Event = { ...insertEvent, id } as any;
     this.events.set(id, event);
     return event;
   }
@@ -849,7 +889,7 @@ export class MemStorage implements IStorage {
 
   async createSavedItem(insertSavedItem: InsertSavedItem): Promise<SavedItem> {
     const id = randomUUID();
-    const savedItem: SavedItem = { ...insertSavedItem, id };
+    const savedItem: SavedItem = { ...insertSavedItem, id } as any;
     this.savedItems.set(id, savedItem);
     return savedItem;
   }

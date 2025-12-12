@@ -30,6 +30,8 @@ export type User = typeof users.$inferSelect;
 export const posts = pgTable("posts", {
   id: varchar("id", { length: 36 }).primaryKey(),
   authorId: varchar("author_id", { length: 36 }).notNull(),
+  authorName: text("author_name").notNull(),
+  authorAvatar: text("author_avatar"),
   content: text("content").notNull(),
   postType: text("post_type").notNull(), // skill_offer, project_invite, workshop, learning_request
   tags: text("tags").array(),
