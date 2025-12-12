@@ -6,9 +6,13 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { MatchCard } from "@/components/match-card";
-import { Search, Filter, Sparkles, Users } from "lucide-react";
+import { Search, Filter, Sparkles, Users, UserPlus, Eye, Globe } from "lucide-react";
+import { Link } from "wouter";
 import { apiRequest, queryClient } from "@/lib/queryClient";
+import { usersService } from "@/lib/appwrite-services";
 import { useToast } from "@/hooks/use-toast";
 import type { User, MatchResult } from "@shared/schema";
 
@@ -20,6 +24,7 @@ export default function Network({ currentUser }: NetworkProps) {
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
   const [skillFilter, setSkillFilter] = useState<string>("all");
+  const [userSearchQuery, setUserSearchQuery] = useState("");
 
   const { data: matches, isLoading: matchesLoading } = useQuery<MatchResult[]>({
     queryKey: ["/api/matches"],
@@ -28,6 +33,23 @@ export default function Network({ currentUser }: NetworkProps) {
 
   const { data: connections, isLoading: connectionsLoading } = useQuery<User[]>({
     queryKey: ["/api/connections"],
+    enabled: !!currentUser,
+  });
+
+  const { data: allUsers, isLoading: allUsersLoading } = useQuery<User[]>({
+    queryKey: ["appwrite-users"],
+    queryFn: async () => {
+      console.log("Fetching users from Appwrite...");
+      try {
+        const users = await usersService.getAllUsers();
+        console.log("Appwrite users fetched:", users);
+        console.log("Number of users:", users.length);
+        return users;
+      } catch (error) {
+        console.error("Error fetching Appwrite users:", error);
+        return [];
+      }
+    },
     enabled: !!currentUser,
   });
 
@@ -48,14 +70,26 @@ export default function Network({ currentUser }: NetworkProps) {
   const filteredMatches = matches?.filter((match) => {
     const matchesSearch = match.user.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       match.skillsTheyCanTeach.some(s => s.toLowerCase().includes(searchQuery.toLowerCase()));
-    
+
     if (skillFilter === "all") return matchesSearch;
     return matchesSearch && match.skillsTheyCanTeach.some(s => s.toLowerCase().includes(skillFilter.toLowerCase()));
   });
 
   const uniqueSkills = matches
-    ? [...new Set(matches.flatMap(m => m.skillsTheyCanTeach))]
+    ? Array.from(new Set(matches.flatMap(m => m.skillsTheyCanTeach)))
     : [];
+
+  const filteredAllUsers = allUsers?.filter((user) => {
+    if (user.id === currentUser?.id) return false;
+
+    const matchesSearch =
+      user.fullName.toLowerCase().includes(userSearchQuery.toLowerCase()) ||
+      user.department.toLowerCase().includes(userSearchQuery.toLowerCase()) ||
+      user.skillsToShare?.some(s => s.toLowerCase().includes(userSearchQuery.toLowerCase())) ||
+      user.skillsToLearn?.some(s => s.toLowerCase().includes(userSearchQuery.toLowerCase()));
+
+    return matchesSearch;
+  });
 
   return (
     <div className="min-h-[calc(100vh-4rem)] bg-background">
@@ -76,6 +110,10 @@ export default function Network({ currentUser }: NetworkProps) {
             <TabsTrigger value="connections" className="gap-2">
               <Users className="h-4 w-4" />
               Connections
+            </TabsTrigger>
+            <TabsTrigger value="all-users" className="gap-2">
+              <Globe className="h-4 w-4" />
+              All Users
             </TabsTrigger>
           </TabsList>
 
@@ -173,7 +211,7 @@ export default function Network({ currentUser }: NetworkProps) {
                       skillsTheyCanTeach: connection.skillsToShare || [],
                       skillsYouCanTeach: currentUser?.skillsToShare || [],
                     }}
-                    onConnect={() => {}}
+                    onConnect={() => { }}
                   />
                 ))}
               </div>
@@ -184,6 +222,130 @@ export default function Network({ currentUser }: NetworkProps) {
                   <p className="text-lg font-medium text-foreground mb-2">No connections yet</p>
                   <p className="text-muted-foreground">
                     Start connecting with students in the Discover tab
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+          </TabsContent>
+
+          <TabsContent value="all-users">
+            <Card className="shadow-sm mb-6">
+              <CardContent className="p-4">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    type="search"
+                    placeholder="Search by name, skill, or department..."
+                    value={userSearchQuery}
+                    onChange={(e) => setUserSearchQuery(e.target.value)}
+                    className="pl-10"
+                    data-testid="input-search-all-users"
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            {allUsersLoading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                {[1, 2, 3, 4, 5, 6].map((i) => (
+                  <Card key={i} className="shadow-sm">
+                    <CardContent className="p-5">
+                      <div className="flex items-start gap-4">
+                        <Skeleton className="h-16 w-16 rounded-full" />
+                        <div className="flex-1 space-y-2">
+                          <Skeleton className="h-5 w-32" />
+                          <Skeleton className="h-4 w-24" />
+                        </div>
+                      </div>
+                      <Skeleton className="h-20 w-full mt-4" />
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : filteredAllUsers && filteredAllUsers.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                {filteredAllUsers.map((user) => (
+                  <Card key={user.id} className="shadow-sm hover:shadow-md transition-shadow" data-testid={`card-user-${user.id}`}>
+                    <CardContent className="p-5">
+                      <div className="flex items-start gap-4">
+                        <Avatar className="h-16 w-16 border-2 border-card shadow-sm">
+                          <AvatarImage src={user.avatarUrl || undefined} alt={user.fullName} />
+                          <AvatarFallback className="bg-primary text-primary-foreground text-lg">
+                            {user.fullName.split(" ").map(n => n[0]).join("").toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-semibold text-foreground truncate">{user.fullName}</h3>
+                          <p className="text-sm text-muted-foreground">
+                            {user.academicYear} | {user.department}
+                          </p>
+                        </div>
+                      </div>
+
+                      {user.skillsToShare && user.skillsToShare.length > 0 && (
+                        <div className="mt-4">
+                          <p className="text-xs font-medium text-muted-foreground mb-1.5">Skills to Share</p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {user.skillsToShare.slice(0, 3).map((skill) => (
+                              <Badge key={skill} variant="secondary" className="text-xs font-normal bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                                {skill}
+                              </Badge>
+                            ))}
+                            {user.skillsToShare.length > 3 && (
+                              <Badge variant="outline" className="text-xs font-normal">
+                                +{user.skillsToShare.length - 3} more
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      {user.skillsToLearn && user.skillsToLearn.length > 0 && (
+                        <div className="mt-3">
+                          <p className="text-xs font-medium text-muted-foreground mb-1.5">Skills to Learn</p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {user.skillsToLearn.slice(0, 3).map((skill) => (
+                              <Badge key={skill} variant="secondary" className="text-xs font-normal bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
+                                {skill}
+                              </Badge>
+                            ))}
+                            {user.skillsToLearn.length > 3 && (
+                              <Badge variant="outline" className="text-xs font-normal">
+                                +{user.skillsToLearn.length - 3} more
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="flex items-center gap-2 mt-4 pt-3 border-t border-border">
+                        <Button
+                          className="flex-1"
+                          size="sm"
+                          onClick={() => connectMutation.mutate(user.id)}
+                          data-testid={`button-connect-${user.id}`}
+                        >
+                          <UserPlus className="h-4 w-4 mr-2" />
+                          Connect
+                        </Button>
+                        <Link href={`/profile/${user.id}`} className="flex-1">
+                          <Button variant="outline" size="sm" className="w-full" data-testid={`button-view-${user.id}`}>
+                            <Eye className="h-4 w-4 mr-2" />
+                            View Profile
+                          </Button>
+                        </Link>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <Card className="shadow-sm">
+                <CardContent className="p-8 text-center">
+                  <Globe className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-lg font-medium text-foreground mb-2">No users found</p>
+                  <p className="text-muted-foreground">
+                    {userSearchQuery ? "Try adjusting your search" : "No other users available"}
                   </p>
                 </CardContent>
               </Card>

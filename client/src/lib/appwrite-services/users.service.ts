@@ -89,11 +89,19 @@ class UsersService {
      */
     async getAllUsers(): Promise<User[]> {
         try {
+            console.log('UsersService: Fetching users from Appwrite...');
+            console.log('Database ID:', this.databaseId);
+            console.log('Collection ID:', this.collectionId);
+
             const response = await databases.listDocuments(
                 this.databaseId,
                 this.collectionId,
                 [Query.limit(100)]
             );
+
+            console.log('UsersService: Raw response:', response);
+            console.log('UsersService: Documents count:', response.documents.length);
+
             return response.documents as unknown as User[];
         } catch (error) {
             console.error('Get all users error:', error);
