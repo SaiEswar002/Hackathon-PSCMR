@@ -225,7 +225,6 @@ async function main() {
     console.log('4. Test the integration with your application');
 }
 
-// Uncomment to run
-// main().catch(console.error);
+main().catch(console.error);
 
 export { createCollections, createBuckets };

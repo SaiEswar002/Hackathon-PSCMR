@@ -25,6 +25,18 @@ const samplePosts = [
         tags: ["business", "saas", "strategy"],
         authorId: "user-3",
     },
+    {
+        content: "💰 Looking for investors for my fintech startup! We've built a UPI-based payment solution for small businesses. Seeking ₹10L seed funding. Have traction with 50+ merchants. Pitch deck ready!",
+        postType: "project_invite",
+        tags: ["business", "fintech", "investment", "startup"],
+        authorId: "user-4",
+    },
+    {
+        content: "📈 Business Development opportunity: Help me expand my e-commerce platform to 5 new cities. Commission-based role with potential for equity. Need someone with sales experience and local network.",
+        postType: "project_invite",
+        tags: ["business", "ecommerce", "sales", "expansion"],
+        authorId: "user-1",
+    },
 
     // Startup Module Posts
     {
@@ -44,6 +56,18 @@ const samplePosts = [
         postType: "skill_offer",
         tags: ["startup", "growth", "mvp"],
         authorId: "user-4",
+    },
+    {
+        content: "🚀 Pre-seed funding secured! $50K for our AI-powered study platform. Looking for a technical co-founder with ML experience. 20% equity + competitive salary. YC alumni preferred.",
+        postType: "project_invite",
+        tags: ["startup", "funding", "ai", "edtech"],
+        authorId: "user-3",
+    },
+    {
+        content: "💪 Building a habit-tracking app for students. MVP ready, need marketing and design help. Currently at 500 downloads. Let's turn this into a unicorn! DM for equity discussion.",
+        postType: "project_invite",
+        tags: ["startup", "productivity", "mobile-app", "growth"],
+        authorId: "user-1",
     },
 
     // Coding Module Posts
@@ -71,6 +95,12 @@ const samplePosts = [
         tags: ["coding", "devops", "docker", "kubernetes"],
         authorId: "user-4",
     },
+    {
+        content: "🚀 Full-stack developer needed for our fintech app! Tech: React, TypeScript, Node.js, PostgreSQL. 6-month internship with stipend. Remote work possible. Send portfolio!",
+        postType: "project_invite",
+        tags: ["coding", "fullstack", "react", "typescript"],
+        authorId: "user-1",
+    },
 
     // Design Module Posts
     {
@@ -91,6 +121,18 @@ const samplePosts = [
         tags: ["design", "branding", "graphics", "startup"],
         authorId: "user-3",
     },
+    {
+        content: "🎯 Motion graphics designer wanted! Creating explainer videos for our EdTech platform. Need someone proficient in After Effects and Premiere. 3-month project with ₹50K budget. Send reel!",
+        postType: "project_invite",
+        tags: ["design", "motion-graphics", "video", "after-effects"],
+        authorId: "user-4",
+    },
+    {
+        content: "📱 Mobile UI/UX workshop this weekend! Learn design systems, prototyping in Figma, and user research methods. Perfect for beginners. ₹500 entry. Includes design kit and mentorship session.",
+        postType: "workshop",
+        tags: ["design", "mobile", "figma", "prototyping"],
+        authorId: "user-2",
+    },
 
     // Marketing Module Posts
     {
@@ -110,6 +152,18 @@ const samplePosts = [
         postType: "workshop",
         tags: ["marketing", "analytics", "google-analytics"],
         authorId: "user-2",
+    },
+    {
+        content: "🚀 Digital marketing intern needed! 3-month program covering SEO, SEM, social media, and email marketing. ₹15K stipend + performance bonus. Apply with portfolio and LinkedIn profile.",
+        postType: "project_invite",
+        tags: ["marketing", "digital-marketing", "internship", "seo"],
+        authorId: "user-3",
+    },
+    {
+        content: "💡 Content creation masterclass! Learn copywriting, video scripting, and social media content strategy. Real case studies from brands like Swiggy and Zomato. ₹2000 for 2-day workshop.",
+        postType: "workshop",
+        tags: ["marketing", "content-creation", "copywriting", "social-media"],
+        authorId: "user-4",
     },
 
     // AI/ML Module Posts
@@ -136,6 +190,12 @@ const samplePosts = [
         postType: "workshop",
         tags: ["aiml", "kaggle", "data-science", "machine-learning"],
         authorId: "user-2",
+    },
+    {
+        content: "🤖 ML Engineer wanted for our healthcare startup! Building AI models for medical diagnosis. Experience with TensorFlow/PyTorch required. Competitive salary + equity. Remote possible. Send resume!",
+        postType: "project_invite",
+        tags: ["aiml", "machine-learning", "tensorflow", "healthcare"],
+        authorId: "user-3",
     },
 ];
 
@@ -178,12 +238,12 @@ async function seedPosts() {
 
         console.log(`\n🎉 Successfully seeded ${createdCount} posts!`);
         console.log("\nPosts by module:");
-        console.log("- Business: 3 posts");
-        console.log("- Startup: 3 posts");
-        console.log("- Coding: 4 posts");
-        console.log("- Design: 3 posts");
-        console.log("- Marketing: 3 posts");
-        console.log("- AI/ML: 4 posts");
+        console.log("- Business: 5 posts");
+        console.log("- Startup: 5 posts");
+        console.log("- Coding: 5 posts");
+        console.log("- Design: 5 posts");
+        console.log("- Marketing: 5 posts");
+        console.log("- AI/ML: 5 posts");
 
     } catch (error) {
         console.error("❌ Error seeding posts:", error);

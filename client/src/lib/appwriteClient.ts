@@ -40,9 +40,9 @@ export const appwriteConfig = {
     },
 
     buckets: {
-        postMedia: import.meta.env.VITE_APPWRITE_POST_MEDIA_BUCKET_ID || 'post_media',
-        profilePics: import.meta.env.VITE_APPWRITE_PROFILE_PICS_BUCKET_ID || 'profile_pics',
-        projectFiles: import.meta.env.VITE_APPWRITE_PROJECT_FILES_BUCKET_ID || 'project_files',
+        postMedia: import.meta.env.VITE_APPWRITE_POST_MEDIA_BUCKET_ID || 'post_images',
+        profilePics: import.meta.env.VITE_APPWRITE_PROFILE_PICS_BUCKET_ID || 'avatars',
+        projectFiles: import.meta.env.VITE_APPWRITE_PROJECT_FILES_BUCKET_ID || 'project_images',
     },
 };
 
