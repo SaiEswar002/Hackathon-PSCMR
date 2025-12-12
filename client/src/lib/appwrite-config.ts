@@ -1,4 +1,22 @@
 // Appwrite configuration constants
+
+// Validate required environment variables
+const requiredEnvVars = {
+    VITE_APPWRITE_ENDPOINT: import.meta.env.VITE_APPWRITE_ENDPOINT,
+    VITE_APPWRITE_PROJECT_ID: import.meta.env.VITE_APPWRITE_PROJECT_ID,
+    VITE_APPWRITE_DATABASE_ID: import.meta.env.VITE_APPWRITE_DATABASE_ID,
+};
+
+const missingVars = Object.entries(requiredEnvVars)
+    .filter(([_, value]) => !value)
+    .map(([key]) => key);
+
+if (missingVars.length > 0) {
+    console.error('[Appwrite Config] Missing required environment variables:', missingVars);
+    console.error('[Appwrite Config] Please ensure these variables are set in your .env file (local) or Netlify dashboard (production)');
+    throw new Error(`Missing required environment variables: ${missingVars.join(', ')}`);
+}
+
 export const appwriteConfig = {
     endpoint: import.meta.env.VITE_APPWRITE_ENDPOINT,
     projectId: import.meta.env.VITE_APPWRITE_PROJECT_ID,
@@ -27,3 +45,4 @@ export const appwriteConfig = {
         eventImages: import.meta.env.VITE_APPWRITE_EVENT_IMAGES_BUCKET_ID,
     },
 };
+
