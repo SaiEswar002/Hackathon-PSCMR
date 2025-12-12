@@ -6,9 +6,11 @@ import { PostCreation } from "@/components/post-creation";
 import { FeedCard } from "@/components/feed-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
-import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import type { User, PostWithAuthor, InsertPost } from "@shared/schema";
+import type { User, PostWithAuthor, InsertPost, Post } from "@shared/schema";
+import { postsService } from "@/lib/appwrite-services/posts.service";
+import { usersService } from "@/lib/appwrite-services/users.service";
+import { queryClient } from "@/lib/queryClient";
 
 interface HomeProps {
   currentUser: User | null;
@@ -18,29 +20,79 @@ export default function Home({ currentUser }: HomeProps) {
   const { toast } = useToast();
   const [selectedModule, setSelectedModule] = useState<string | undefined>();
 
-  const { data: posts, isLoading: postsLoading } = useQuery<PostWithAuthor[]>({
-    queryKey: ["/api/posts", selectedModule],
+  const { data: posts, isLoading: postsLoading } = useQuery({
+    queryKey: ["posts", selectedModule, currentUser?.id],
+    queryFn: async (): Promise<PostWithAuthor[]> => {
+      let rawPosts: any[]; // Using any to bypass initial Post vs Document type mismatch if any
+      if (selectedModule) {
+        rawPosts = await postsService.searchPostsByTags([selectedModule]);
+      } else {
+        rawPosts = await postsService.getAllPosts();
+      }
+
+      // Enrich posts with author information
+      const postsWithAuthors = await Promise.all(
+        rawPosts.map(async (post) => {
+          try {
+            const author = await usersService.getUser(post.authorId);
+            let isLiked = false;
+            if (currentUser?.id) {
+              isLiked = await postsService.hasUserLikedPost(post.id, currentUser.id);
+            }
+
+            if (!author) return null;
+
+            const postWithAuthor: PostWithAuthor = {
+              ...post,
+              author,
+              isLiked,
+            };
+            return postWithAuthor;
+          } catch (e) {
+            console.error(`Failed to load author for post ${post.id}`, e);
+            return null;
+          }
+        })
+      );
+
+      // Filter out posts where author couldn't be found
+      return postsWithAuthors.filter((p): p is PostWithAuthor => p !== null);
+    },
   });
 
   const createPostMutation = useMutation({
-    mutationFn: async (post: Omit<InsertPost, "authorId" | "createdAt">) => {
-      return apiRequest("POST", "/api/posts", post);
+    mutationFn: async (postData: Omit<InsertPost, "authorId" | "createdAt">) => {
+      if (!currentUser) throw new Error("You must be logged in to create a post");
+
+      const newPost: InsertPost = {
+        ...postData,
+        authorId: currentUser.id,
+        createdAt: new Date().toISOString(),
+      };
+
+      return postsService.createPost(newPost);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/posts"] });
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
       toast({ title: "Post created successfully!" });
     },
-    onError: () => {
+    onError: (error: any) => {
+      console.error("Create post error:", error);
       toast({ title: "Failed to create post", variant: "destructive" });
     },
   });
 
   const likePostMutation = useMutation({
     mutationFn: async (postId: string) => {
-      return apiRequest("POST", `/api/posts/${postId}/like`, {});
+      if (!currentUser) throw new Error("You must be logged in to like a post");
+      return postsService.toggleLike(postId, currentUser.id);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/posts"] });
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+    },
+    onError: (error: any) => {
+      console.error("Like post error:", error);
+      toast({ title: "Failed to like post", variant: "destructive" });
     },
   });
 
