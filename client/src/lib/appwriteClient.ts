@@ -9,6 +9,11 @@ if (!APPWRITE_ENDPOINT || !APPWRITE_PROJECT_ID) {
     throw new Error('Missing Appwrite configuration. Please check your .env file.');
 }
 
+console.log('[AppwriteClient] Initializing with:');
+console.log('[AppwriteClient] Endpoint:', APPWRITE_ENDPOINT);
+console.log('[AppwriteClient] Project ID:', APPWRITE_PROJECT_ID);
+console.log('[AppwriteClient] Database ID:', APPWRITE_DATABASE_ID);
+
 // Initialize Appwrite Client
 export const client = new Client()
     .setEndpoint(APPWRITE_ENDPOINT)

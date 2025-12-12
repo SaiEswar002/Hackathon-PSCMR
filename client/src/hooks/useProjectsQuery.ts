@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ID, Query, Permission, Role } from 'appwrite';
-import { databases, storage, appwriteConfig } from '@/lib/appwriteClient';
+import { databases, storage } from '@/lib/appwrite';
+import { appwriteConfig } from '@/lib/appwrite-config';
 import { useAuth } from './useAuth';
 import type {
     Project,
@@ -108,11 +109,11 @@ async function createProject(data: CreateProjectData, userId: string): Promise<P
 
     if (data.image) {
         const fileResponse = await storage.createFile(
-            appwriteConfig.buckets.projectFiles || 'project_files',
+            appwriteConfig.buckets.projectImages || 'project_images',
             ID.unique(),
             data.image
         );
-        imageUrl = `${appwriteConfig.endpoint}/storage/buckets/${appwriteConfig.buckets.projectFiles}/files/${fileResponse.$id}/view?project=${appwriteConfig.projectId}`;
+        imageUrl = `${appwriteConfig.endpoint}/storage/buckets/${appwriteConfig.buckets.projectImages}/files/${fileResponse.$id}/view?project=${appwriteConfig.projectId}`;
     }
 
     const project = await databases.createDocument(

@@ -37,10 +37,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Get current user
     const getCurrentUser = useCallback(async () => {
         try {
+            console.log('[Auth] Attempting to get current user...');
             const currentUser = await account.get();
+            console.log('[Auth] Successfully retrieved user:', currentUser.$id);
             setUser(currentUser);
             return currentUser;
-        } catch (error) {
+        } catch (error: any) {
+            console.error('[Auth] Get current user error:', error);
+            console.error('[Auth] Error type:', error.type);
+            console.error('[Auth] Error code:', error.code);
+            console.error('[Auth] Error message:', error.message);
             setUser(null);
             return null;
         }
@@ -88,10 +94,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Login
     const login = useCallback(async (data: LoginData) => {
         try {
+            console.log('[Auth] Starting login for:', data.email);
             await account.createEmailPasswordSession(data.email, data.password);
-            await getCurrentUser();
+            console.log('[Auth] Session created successfully');
+            const user = await getCurrentUser();
+            console.log('[Auth] Login complete, user loaded:', user?.$id);
         } catch (error: any) {
-            console.error('Login error:', error);
+            console.error('[Auth] Login error:', error);
+            console.error('[Auth] Login error type:', error.type);
+            console.error('[Auth] Login error code:', error.code);
             throw new Error(error.message || 'Failed to login');
         }
     }, [getCurrentUser]);
