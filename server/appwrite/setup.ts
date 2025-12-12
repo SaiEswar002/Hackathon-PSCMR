@@ -214,8 +214,8 @@ async function main() {
     console.log('Make sure you have created the database "ssm_database" in your Appwrite console first.\n');
 
     // Uncomment the following lines to run the setup
-    // await createCollections();
-    // await createBuckets();
+    await createCollections();
+    await createBuckets();
 
     console.log('✅ Setup complete!');
     console.log('\nNext steps:');
