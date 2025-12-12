@@ -69,9 +69,13 @@ function AppContent() {
       } else {
         throw new Error("User profile not found");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Login error:", error);
-      toast({ title: "Invalid credentials", variant: "destructive" });
+      toast({
+        title: "Login Failed",
+        description: error.message || "Invalid credentials",
+        variant: "destructive"
+      });
     }
   };
 
@@ -92,9 +96,9 @@ function AppContent() {
         email: data.email,
         academicYear: data.academicYear,
         department: data.department,
-        bio: null,
-        avatarUrl: null,
-        bannerUrl: null,
+        bio: "",
+        avatarUrl: "",
+        bannerUrl: "",
         skillsToShare: data.skillsToShare || [],
         skillsToLearn: data.skillsToLearn || [],
         interests: data.interests || [],
@@ -107,7 +111,11 @@ function AppContent() {
     } catch (error: any) {
       console.error("Signup error:", error);
       const errorMessage = error?.message || "Failed to create account";
-      toast({ title: errorMessage, variant: "destructive" });
+      toast({
+        title: "Signup Failed",
+        description: errorMessage,
+        variant: "destructive"
+      });
     }
   };
 
