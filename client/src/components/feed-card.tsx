@@ -19,6 +19,7 @@ interface FeedCardProps {
   onLike: (postId: string) => void;
   onShare: (postId: string) => void;
   onSave: (postId: string) => void;
+  onCommentAdded: () => void;
 }
 
 const postTypeLabels: Record<string, { label: string; color: string }> = {
@@ -44,7 +45,7 @@ function formatTimeAgo(dateString: string): string {
   return date.toLocaleDateString();
 }
 
-export function FeedCard({ post, currentUser, onLike, onShare, onSave }: FeedCardProps) {
+export function FeedCard({ post, currentUser, onLike, onShare, onSave, onCommentAdded }: FeedCardProps) {
   const [showComments, setShowComments] = useState(false);
   const postType = postTypeLabels[post.postType] || postTypeLabels.skill_offer;
 
@@ -155,6 +156,7 @@ export function FeedCard({ post, currentUser, onLike, onShare, onSave }: FeedCar
           <CommentsList
             postId={post.id}
             currentUser={currentUser}
+            onCommentAdded={onCommentAdded}
           />
         )}
       </CardContent>

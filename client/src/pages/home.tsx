@@ -119,6 +119,10 @@ export default function Home({ currentUser }: HomeProps) {
     toast({ title: "Post saved!" });
   };
 
+  const handleCommentAdded = () => {
+    queryClient.invalidateQueries({ queryKey: ["posts"] });
+  };
+
   return (
     <div className="min-h-[calc(100vh-4rem)] bg-background">
       <div className="max-w-7xl mx-auto px-4 py-6">
@@ -169,6 +173,7 @@ export default function Home({ currentUser }: HomeProps) {
                     onLike={handleLike}
                     onShare={handleShare}
                     onSave={handleSave}
+                    onCommentAdded={handleCommentAdded}
                   />
                 ))}
               </div>

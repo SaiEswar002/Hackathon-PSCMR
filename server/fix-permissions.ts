@@ -54,7 +54,7 @@ async function ensureCollection(collectionId: string, name: string) {
     }
 }
 
-async function ensureAttribute(collectionId: string, key: string, type: 'string' | 'integer' | 'boolean', size?: number, required: boolean = false) {
+async function ensureAttribute(collectionId: string, key: string, type: 'string' | 'integer' | 'boolean', size?: number, required: boolean = false, array: boolean = false) {
     try {
         await databases.getAttribute(config.databaseId!, collectionId, key);
         console.log(`   - Attribute ${key} exists.`);
@@ -62,11 +62,11 @@ async function ensureAttribute(collectionId: string, key: string, type: 'string'
         console.log(`   - Creating attribute ${key}...`);
         try {
             if (type === 'string') {
-                await databases.createStringAttribute(config.databaseId!, collectionId, key, size!, required);
+                await databases.createStringAttribute(config.databaseId!, collectionId, key, size!, required, undefined, array);
             } else if (type === 'integer') {
-                await databases.createIntegerAttribute(config.databaseId!, collectionId, key, required);
+                await databases.createIntegerAttribute(config.databaseId!, collectionId, key, required, undefined, undefined, undefined);
             } else if (type === 'boolean') {
-                await databases.createBooleanAttribute(config.databaseId!, collectionId, key, required);
+                await databases.createBooleanAttribute(config.databaseId!, collectionId, key, required, undefined, array);
             }
             // Wait a bit for attribute to be created
             await new Promise(resolve => setTimeout(resolve, 500));
@@ -99,7 +99,19 @@ async function fixPermissions() {
     console.log('🔧 Starting permissions fix and schema setup...');
 
     // 1. Posts Collection Permissions
-    await updateCollectionPermissions('posts', config.collections.posts!, [
+    const postsId = config.collections.posts!;
+    // Ensure Posts Attributes
+    console.log(`Checking schema for Posts (${postsId})...`);
+    await ensureAttribute(postsId, 'authorId', 'string', 36, true);
+    await ensureAttribute(postsId, 'content', 'string', 5000, true);
+    await ensureAttribute(postsId, 'postType', 'string', 50, true);
+    await ensureAttribute(postsId, 'tags', 'string', 50, false, true); // Array
+    await ensureAttribute(postsId, 'imageUrl', 'string', 1000, false);
+    await ensureAttribute(postsId, 'likesCount', 'integer', undefined, false);
+    await ensureAttribute(postsId, 'commentsCount', 'integer', undefined, false);
+    await ensureAttribute(postsId, 'sharesCount', 'integer', undefined, false);
+
+    await updateCollectionPermissions('posts', postsId, [
         Permission.read(Role.any()),
         Permission.create(Role.users()),
         Permission.update(Role.users()),
