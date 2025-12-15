@@ -10,6 +10,19 @@ class UsersService {
     /**
      * Create a new user profile
      */
+    /**
+     * Helper to map Appwrite document to User interface
+     */
+    private mapDocumentToUser(doc: any): User {
+        return {
+            ...doc,
+            id: doc.$id,
+        } as unknown as User;
+    }
+
+    /**
+     * Create a new user profile
+     */
     async createUser(data: InsertUser): Promise<User> {
         try {
             const response = await databases.createDocument(
@@ -22,7 +35,7 @@ class UsersService {
                     connectionsCount: 0,
                 }
             );
-            return response as unknown as User;
+            return this.mapDocumentToUser(response);
         } catch (error) {
             console.error('Create user error:', error);
             throw error;
@@ -39,7 +52,7 @@ class UsersService {
                 this.collectionId,
                 userId
             );
-            return response as unknown as User;
+            return this.mapDocumentToUser(response);
         } catch (error) {
             console.error('Get user error:', error);
             return null;
@@ -57,10 +70,13 @@ class UsersService {
                 [Query.equal('email', email)]
             );
             return response.documents.length > 0
-                ? (response.documents[0] as unknown as User)
+                ? this.mapDocumentToUser(response.documents[0])
                 : null;
-        } catch (error) {
+        } catch (error: any) {
             console.error('Get user by email error:', error);
+            if (error?.code === 400 && error?.message?.includes('Index')) {
+                console.error('POSSIBLE CAUSE: Missing Index on "email" attribute in "users" collection.');
+            }
             return null;
         }
     }
@@ -76,7 +92,7 @@ class UsersService {
                 [Query.equal('username', username)]
             );
             return response.documents.length > 0
-                ? (response.documents[0] as unknown as User)
+                ? this.mapDocumentToUser(response.documents[0])
                 : null;
         } catch (error) {
             console.error('Get user by username error:', error);
@@ -102,7 +118,7 @@ class UsersService {
             console.log('UsersService: Raw response:', response);
             console.log('UsersService: Documents count:', response.documents.length);
 
-            return response.documents as unknown as User[];
+            return response.documents.map(doc => this.mapDocumentToUser(doc));
         } catch (error) {
             console.error('Get all users error:', error);
             return [];
@@ -120,7 +136,7 @@ class UsersService {
                 userId,
                 data
             );
-            return response as unknown as User;
+            return this.mapDocumentToUser(response);
         } catch (error) {
             console.error('Update user error:', error);
             return null;
@@ -141,7 +157,7 @@ class UsersService {
                 this.collectionId,
                 queries
             );
-            return response.documents as unknown as User[];
+            return response.documents.map(doc => this.mapDocumentToUser(doc));
         } catch (error) {
             console.error('Search users by skills error:', error);
             return [];
@@ -158,7 +174,7 @@ class UsersService {
                 this.collectionId,
                 [Query.equal('department', department)]
             );
-            return response.documents as unknown as User[];
+            return response.documents.map(doc => this.mapDocumentToUser(doc));
         } catch (error) {
             console.error('Search users by department error:', error);
             return [];

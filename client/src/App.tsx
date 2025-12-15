@@ -71,9 +71,16 @@ function AppContent() {
       }
     } catch (error: any) {
       console.error("Login error:", error);
+
+      let description = error.message || "Invalid credentials";
+
+      if (error.message === "User profile not found") {
+        description = "Account exists but profile data is missing. Please contact support or try signing up again.";
+      }
+
       toast({
         title: "Login Failed",
-        description: error.message || "Invalid credentials",
+        description: description,
         variant: "destructive"
       });
     }

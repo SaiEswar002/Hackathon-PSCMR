@@ -21,7 +21,7 @@ export default function Home({ currentUser }: HomeProps) {
   const [selectedModule, setSelectedModule] = useState<string | undefined>();
 
   const { data: posts, isLoading: postsLoading } = useQuery({
-    queryKey: ["posts", selectedModule, currentUser?.id],
+    queryKey: ["posts", selectedModule, (currentUser as any)?.$id || currentUser?.id],
     queryFn: async (): Promise<PostWithAuthor[]> => {
       let rawPosts: any[]; // Using any to bypass initial Post vs Document type mismatch if any
       if (selectedModule) {
@@ -36,8 +36,9 @@ export default function Home({ currentUser }: HomeProps) {
           try {
             const author = await usersService.getUser(post.authorId);
             let isLiked = false;
-            if (currentUser?.id) {
-              isLiked = await postsService.hasUserLikedPost(post.id, currentUser.id);
+            if ((currentUser as any)?.$id || currentUser?.id) {
+              const userId = (currentUser as any).$id || currentUser.id;
+              isLiked = await postsService.hasUserLikedPost(post.id, userId);
             }
 
             if (!author) return null;
@@ -66,7 +67,7 @@ export default function Home({ currentUser }: HomeProps) {
 
       const newPost: InsertPost = {
         ...postData,
-        authorId: currentUser.id,
+        authorId: (currentUser as any).$id || currentUser.id,
         authorName: currentUser.fullName,
         authorAvatar: currentUser.avatarUrl,
         createdAt: new Date().toISOString(),
@@ -91,7 +92,7 @@ export default function Home({ currentUser }: HomeProps) {
   const likePostMutation = useMutation({
     mutationFn: async (postId: string) => {
       if (!currentUser) throw new Error("You must be logged in to like a post");
-      return postsService.toggleLike(postId, currentUser.id);
+      return postsService.toggleLike(postId, (currentUser as any).$id || currentUser.id);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["posts"] });
@@ -164,8 +165,8 @@ export default function Home({ currentUser }: HomeProps) {
                   <FeedCard
                     key={post.id}
                     post={post}
+                    currentUser={currentUser}
                     onLike={handleLike}
-                    onComment={handleComment}
                     onShare={handleShare}
                     onSave={handleSave}
                   />

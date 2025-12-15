@@ -1,6 +1,7 @@
-import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useInfiniteQuery, useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { ID, Query, Permission, Role } from 'appwrite';
-import { databases, storage, appwriteConfig } from '@/lib/appwriteClient';
+import { databases, storage } from '@/lib/appwriteClient';
+import { appwriteConfig } from '@/lib/appwrite-config';
 import { useAuth } from './useAuth';
 import type { Post, PostWithAuthor, CreatePostData, PostsResponse } from '@/types/post';
 
@@ -76,18 +77,25 @@ async function fetchPostsWithAuthors(pageParam: number = 0): Promise<PostsRespon
 
 // Create post with optional image upload
 async function createPost(data: CreatePostData, userId: string): Promise<Post> {
+    if (!userId) {
+        console.error('❌ createPost: userId is missing/empty');
+        throw new Error('Cannot create post: User ID is missing');
+    }
+
     let imageUrl: string | undefined;
 
     // Upload image if provided
     if (data.image) {
         const fileResponse = await storage.createFile(
-            appwriteConfig.buckets.postMedia,
+            appwriteConfig.buckets.postImages, // Use correct bucket from config
             ID.unique(),
             data.image
         );
 
-        imageUrl = `${appwriteConfig.endpoint}/storage/buckets/${appwriteConfig.buckets.postMedia}/files/${fileResponse.$id}/view?project=${appwriteConfig.projectId}`;
+        imageUrl = `${appwriteConfig.endpoint}/storage/buckets/${appwriteConfig.buckets.postImages}/files/${fileResponse.$id}/view?project=${appwriteConfig.projectId}`;
     }
+
+    console.log('📝 Creating document with authorId:', userId);
 
     // Create post document
     const post = await databases.createDocument(
@@ -105,7 +113,7 @@ async function createPost(data: CreatePostData, userId: string): Promise<Post> {
             sharesCount: 0,
         },
         [
-            Permission.read(Role.users()),
+            Permission.read(Role.any()), // Public read
             Permission.update(Role.user(userId)),
             Permission.delete(Role.user(userId)),
         ]
@@ -217,6 +225,7 @@ export function useCreatePost() {
     return useMutation({
         mutationFn: (data: CreatePostData) => {
             if (!user) throw new Error('User not authenticated');
+            console.log('Creating post for user:', user.$id, user);
             return createPost(data, user.$id);
         },
         onSuccess: () => {
@@ -282,13 +291,12 @@ export function useToggleLike(postId: string) {
 export function useCheckLiked(postId: string) {
     const { user } = useAuth();
 
-    return useInfiniteQuery({
+    return useQuery({
         queryKey: ['post-like', postId, user?.$id],
-        queryFn: () => {
+        queryFn: async () => {
             if (!user) return false;
             return checkIfLiked(postId, user.$id);
         },
         enabled: !!user,
-        initialPageParam: 0,
     });
 }

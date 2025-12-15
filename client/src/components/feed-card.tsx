@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -9,12 +10,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { PostWithAuthor } from "@shared/schema";
+import type { PostWithAuthor, User } from "@shared/schema";
+import { CommentsList } from "./comments-list";
 
 interface FeedCardProps {
   post: PostWithAuthor;
+  currentUser: User | null;
   onLike: (postId: string) => void;
-  onComment: (postId: string) => void;
   onShare: (postId: string) => void;
   onSave: (postId: string) => void;
 }
@@ -27,6 +29,7 @@ const postTypeLabels: Record<string, { label: string; color: string }> = {
 };
 
 function formatTimeAgo(dateString: string): string {
+  if (!dateString) return "";
   const date = new Date(dateString);
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
@@ -41,7 +44,8 @@ function formatTimeAgo(dateString: string): string {
   return date.toLocaleDateString();
 }
 
-export function FeedCard({ post, onLike, onComment, onShare, onSave }: FeedCardProps) {
+export function FeedCard({ post, currentUser, onLike, onShare, onSave }: FeedCardProps) {
+  const [showComments, setShowComments] = useState(false);
   const postType = postTypeLabels[post.postType] || postTypeLabels.skill_offer;
 
   return (
@@ -129,7 +133,7 @@ export function FeedCard({ post, onLike, onComment, onShare, onSave }: FeedCardP
             variant="ghost"
             size="sm"
             className="flex-1 gap-2"
-            onClick={() => onComment(post.id)}
+            onClick={() => setShowComments(!showComments)}
             data-testid={`button-comment-${post.id}`}
           >
             <MessageCircle className="h-4 w-4" />
@@ -146,6 +150,13 @@ export function FeedCard({ post, onLike, onComment, onShare, onSave }: FeedCardP
             Share
           </Button>
         </div>
+
+        {showComments && (
+          <CommentsList
+            postId={post.id}
+            currentUser={currentUser}
+          />
+        )}
       </CardContent>
     </Card>
   );

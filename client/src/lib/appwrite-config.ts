@@ -34,6 +34,7 @@ export const appwriteConfig = {
         events: import.meta.env.VITE_APPWRITE_EVENTS_COLLECTION_ID,
         savedItems: import.meta.env.VITE_APPWRITE_SAVED_ITEMS_COLLECTION_ID,
         postLikes: import.meta.env.VITE_APPWRITE_POST_LIKES_COLLECTION_ID,
+        comments: import.meta.env.VITE_APPWRITE_COMMENTS_COLLECTION_ID || 'comments',
     },
 
     // Bucket IDs

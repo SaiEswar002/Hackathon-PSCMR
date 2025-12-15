@@ -12,20 +12,44 @@ class PostsService {
     /**
      * Create a new post
      */
+    /**
+     * Helper to map Appwrite document to Post interface
+     */
+    private mapDocumentToPost(doc: any): Post {
+        return {
+            ...doc,
+            id: doc.$id,
+        } as unknown as Post;
+    }
+
+    /**
+     * Create a new post
+     */
     async createPost(data: InsertPost): Promise<Post> {
         try {
+            // Sanitize payload: Remove fields that don't exist in Appwrite schema
+            // authorName and authorAvatar are relational/denormalized fields not present in the DB schema
+            const { authorName, authorAvatar, ...validData } = data as any;
+
+            const payload = {
+                authorId: validData.authorId,
+                content: validData.content,
+                postType: validData.postType,
+                tags: validData.tags,
+                imageUrl: validData.imageUrl,
+                createdAt: validData.createdAt,
+                likesCount: 0,
+                commentsCount: 0,
+                sharesCount: 0,
+            };
+
             const response = await databases.createDocument(
                 this.databaseId,
                 this.collectionId,
                 ID.unique(),
-                {
-                    ...data,
-                    likesCount: 0,
-                    commentsCount: 0,
-                    sharesCount: 0,
-                }
+                payload
             );
-            return response as unknown as Post;
+            return this.mapDocumentToPost(response);
         } catch (error) {
             console.error('Create post error:', error);
             throw error;
@@ -42,7 +66,7 @@ class PostsService {
                 this.collectionId,
                 postId
             );
-            return response as unknown as Post;
+            return this.mapDocumentToPost(response);
         } catch (error) {
             console.error('Get post error:', error);
             return null;
@@ -59,7 +83,7 @@ class PostsService {
                 this.collectionId,
                 [Query.orderDesc('$createdAt'), Query.limit(100)]
             );
-            return response.documents as unknown as Post[];
+            return response.documents.map(doc => this.mapDocumentToPost(doc));
         } catch (error) {
             console.error('Get all posts error:', error);
             return [];
@@ -105,7 +129,7 @@ class PostsService {
                     Query.orderDesc('$createdAt'),
                 ]
             );
-            return response.documents as unknown as Post[];
+            return response.documents.map(doc => this.mapDocumentToPost(doc));
         } catch (error) {
             console.error('Get posts by author error:', error);
             return [];
@@ -123,7 +147,7 @@ class PostsService {
                 postId,
                 data
             );
-            return response as unknown as Post;
+            return this.mapDocumentToPost(response);
         } catch (error) {
             console.error('Update post error:', error);
             return null;
@@ -151,6 +175,10 @@ class PostsService {
      * Like/Unlike a post
      */
     async toggleLike(postId: string, userId: string): Promise<Post | null> {
+        if (!postId || !userId) {
+            console.error('toggleLike called with missing args:', { postId, userId });
+            return null;
+        }
         try {
             const hasLiked = await this.hasUserLikedPost(postId, userId);
             const post = await this.getPost(postId);
@@ -194,6 +222,7 @@ class PostsService {
      * Check if user has liked a post
      */
     async hasUserLikedPost(postId: string, userId: string): Promise<boolean> {
+        if (!userId || !postId) return false;
         try {
             const response = await databases.listDocuments(
                 this.databaseId,
@@ -214,6 +243,7 @@ class PostsService {
      * Get like document
      */
     private async getLikeDocument(postId: string, userId: string) {
+        if (!userId || !postId) return null;
         try {
             const response = await databases.listDocuments(
                 this.databaseId,
@@ -243,7 +273,7 @@ class PostsService {
                     Query.orderDesc('$createdAt'),
                 ]
             );
-            return response.documents as unknown as Post[];
+            return response.documents.map(doc => this.mapDocumentToPost(doc));
         } catch (error) {
             console.error('Get posts by type error:', error);
             return [];
@@ -261,10 +291,109 @@ class PostsService {
                 this.collectionId,
                 [...queries, Query.orderDesc('$createdAt')]
             );
-            return response.documents as unknown as Post[];
+            return response.documents.map(doc => this.mapDocumentToPost(doc));
         } catch (error) {
             console.error('Search posts by tags error:', error);
             return [];
+        }
+    }
+    /**
+     * Get comments for a post
+     */
+    async getComments(postId: string): Promise<any[]> {
+        try {
+            const response = await databases.listDocuments(
+                this.databaseId,
+                appwriteConfig.collections.comments,
+                [
+                    Query.equal('postId', postId),
+                    Query.orderDesc('$createdAt'),
+                ]
+            );
+
+            // Enrich with author info
+            const commentsWithAuthors = await Promise.all(response.documents.map(async (doc) => {
+                const author = await usersService.getUser(doc.authorId);
+                return {
+                    ...doc,
+                    author: author || { fullName: 'Unknown User', avatarUrl: '' }
+                };
+            }));
+
+            return commentsWithAuthors;
+        } catch (error) {
+            console.error('Get comments error:', error);
+            return [];
+        }
+    }
+
+    /**
+     * Create a comment
+     */
+    /**
+     * Create a comment
+     */
+    async createComment(postId: string, userId: string, content: string): Promise<any> {
+        try {
+            const comment = await databases.createDocument(
+                this.databaseId,
+                appwriteConfig.collections.comments,
+                ID.unique(),
+                {
+                    postId,
+                    authorId: userId,
+                    content,
+                    likesCount: 0
+                }
+            );
+
+            // Update post comments count
+            const post = await this.getPost(postId);
+            if (post) {
+                await this.updatePost(postId, {
+                    commentsCount: (post.commentsCount || 0) + 1
+                });
+            }
+
+            return comment;
+        } catch (error) {
+            console.error('Create comment error:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Delete a comment
+     */
+    async deleteComment(commentId: string): Promise<boolean> {
+        try {
+            // Get comment to find postId
+            const comment = await databases.getDocument(
+                this.databaseId,
+                appwriteConfig.collections.comments,
+                commentId
+            );
+
+            await databases.deleteDocument(
+                this.databaseId,
+                appwriteConfig.collections.comments,
+                commentId
+            );
+
+            // Update post comments count
+            if (comment.postId) {
+                const post = await this.getPost(comment.postId);
+                if (post) {
+                    await this.updatePost(comment.postId, {
+                        commentsCount: Math.max(0, (post.commentsCount || 0) - 1)
+                    });
+                }
+            }
+
+            return true;
+        } catch (error) {
+            console.error('Delete comment error:', error);
+            return false;
         }
     }
 }
