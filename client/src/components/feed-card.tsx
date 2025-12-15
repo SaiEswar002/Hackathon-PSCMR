@@ -20,6 +20,7 @@ interface FeedCardProps {
   onShare: (postId: string) => void;
   onSave: (postId: string) => void;
   onCommentAdded: () => void;
+  onDelete?: (postId: string) => void;
 }
 
 const postTypeLabels: Record<string, { label: string; color: string }> = {
@@ -45,9 +46,15 @@ function formatTimeAgo(dateString: string): string {
   return date.toLocaleDateString();
 }
 
-export function FeedCard({ post, currentUser, onLike, onShare, onSave, onCommentAdded }: FeedCardProps) {
+export function FeedCard({ post, currentUser, onLike, onShare, onSave, onCommentAdded, onDelete }: FeedCardProps) {
   const [showComments, setShowComments] = useState(false);
   const postType = postTypeLabels[post.postType] || postTypeLabels.skill_offer;
+
+  // Check if current user is the author
+  const isAuthor = currentUser && (
+    (currentUser as any).$id === post.authorId ||
+    currentUser.id === post.authorId
+  );
 
   return (
     <Card className="shadow-sm transition-all duration-200 hover:shadow-md" data-testid={`card-post-${post.id}`}>
@@ -83,6 +90,15 @@ export function FeedCard({ post, currentUser, onLike, onShare, onSave, onComment
                 <Bookmark className="h-4 w-4 mr-2" />
                 Save post
               </DropdownMenuItem>
+              {isAuthor && onDelete && (
+                <DropdownMenuItem
+                  onClick={() => onDelete(post.id)}
+                  className="text-red-600 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-950/20"
+                >
+                  <MoreHorizontal className="h-4 w-4 mr-2 rotate-90" /> {/* Using rotate as a trash placeholder or import Trash */}
+                  Delete post
+                </DropdownMenuItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

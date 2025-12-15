@@ -103,6 +103,24 @@ export default function Home({ currentUser }: HomeProps) {
     },
   });
 
+  const deletePostMutation = useMutation({
+    mutationFn: async (postId: string) => {
+      return postsService.deletePost(postId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      toast({ title: "Post deleted successfully" });
+    },
+    onError: (error: any) => {
+      console.error("Delete post error:", error);
+      toast({
+        title: "Failed to delete post",
+        description: error.message || "Unknown error occurred",
+        variant: "destructive"
+      });
+    },
+  });
+
   const handleLike = (postId: string) => {
     likePostMutation.mutate(postId);
   };
@@ -117,6 +135,12 @@ export default function Home({ currentUser }: HomeProps) {
 
   const handleSave = (postId: string) => {
     toast({ title: "Post saved!" });
+  };
+
+  const handleDelete = (postId: string) => {
+    if (confirm("Are you sure you want to delete this post?")) {
+      deletePostMutation.mutate(postId);
+    }
   };
 
   const handleCommentAdded = () => {
@@ -174,6 +198,7 @@ export default function Home({ currentUser }: HomeProps) {
                     onShare={handleShare}
                     onSave={handleSave}
                     onCommentAdded={handleCommentAdded}
+                    onDelete={handleDelete}
                   />
                 ))}
               </div>

@@ -1,4 +1,4 @@
-import { ID, Query } from 'appwrite';
+import { ID, Query, Permission, Role } from 'appwrite';
 import { databases } from '../appwrite';
 import { appwriteConfig } from '../appwrite-config';
 import type { Post, InsertPost, PostWithAuthor, User } from '@shared/schema';
@@ -47,7 +47,12 @@ class PostsService {
                 this.databaseId,
                 this.collectionId,
                 ID.unique(),
-                payload
+                payload,
+                [
+                    Permission.read(Role.any()),
+                    Permission.update(Role.user(validData.authorId)),
+                    Permission.delete(Role.user(validData.authorId)),
+                ]
             );
             return this.mapDocumentToPost(response);
         } catch (error) {
