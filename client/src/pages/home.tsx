@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import type { User, PostWithAuthor, InsertPost, Post } from "@shared/schema";
 import { postsService } from "@/lib/appwrite-services/posts.service";
 import { usersService } from "@/lib/appwrite-services/users.service";
+import { authService } from "@/lib/appwrite-services/auth.service";
 import { queryClient } from "@/lib/queryClient";
 
 interface HomeProps {
@@ -36,8 +37,8 @@ export default function Home({ currentUser }: HomeProps) {
           try {
             const author = await usersService.getUser(post.authorId);
             let isLiked = false;
-            if ((currentUser as any)?.$id || currentUser?.id) {
-              const userId = (currentUser as any).$id || currentUser.id;
+            const userId = (currentUser as any)?.$id || currentUser?.id;
+            if (userId) {
               isLiked = await postsService.hasUserLikedPost(post.id, userId);
             }
 
@@ -65,15 +66,27 @@ export default function Home({ currentUser }: HomeProps) {
     mutationFn: async (postData: Omit<InsertPost, "authorId" | "createdAt" | "authorName" | "authorAvatar">) => {
       if (!currentUser) throw new Error("You must be logged in to create a post");
 
+      const authorId = (currentUser as any).$id || currentUser.id;
+      if (!authorId) {
+        console.error("Home.tsx: currentUser is missing ID:", currentUser);
+        throw new Error("User ID is missing. Please try logging in again.");
+      }
+
       const newPost: InsertPost = {
         ...postData,
-        authorId: (currentUser as any).$id || currentUser.id,
+        authorId,
         authorName: currentUser.fullName,
         authorAvatar: currentUser.avatarUrl,
         createdAt: new Date().toISOString(),
       };
 
-      return postsService.createPost(newPost);
+      console.log("Home.tsx: Creating post with payload:", newPost);
+
+      // Get the correct Auth User ID for permissions
+      const authUser = await authService.getCurrentUser();
+      if (!authUser) throw new Error("Authentication session lost");
+
+      return postsService.createPost(newPost, authUser.$id);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["posts"] });

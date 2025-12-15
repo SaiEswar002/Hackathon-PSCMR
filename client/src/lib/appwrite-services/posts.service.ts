@@ -25,10 +25,11 @@ class PostsService {
     /**
      * Create a new post
      */
-    async createPost(data: InsertPost): Promise<Post> {
+    async createPost(data: InsertPost, authUserId: string): Promise<Post> {
         try {
             // Sanitize payload: Remove fields that don't exist in Appwrite schema
             // authorName and authorAvatar are relational/denormalized fields not present in the DB schema
+            console.log('PostsService: createPost called with:', data);
             const { authorName, authorAvatar, ...validData } = data as any;
 
             const payload = {
@@ -50,8 +51,8 @@ class PostsService {
                 payload,
                 [
                     Permission.read(Role.any()),
-                    Permission.update(Role.user(validData.authorId)),
-                    Permission.delete(Role.user(validData.authorId)),
+                    Permission.update(Role.user(authUserId)),
+                    Permission.delete(Role.user(authUserId)),
                 ]
             );
             return this.mapDocumentToPost(response);
